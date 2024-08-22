@@ -12,7 +12,6 @@ namespace LiveScoreReporter
             // Add services to the container.
 
             builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQ"));
-            builder.Services.AddHostedService<MatchService>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
