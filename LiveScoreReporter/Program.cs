@@ -1,5 +1,7 @@
 
+using LiveScoreReporter.EFCore.Infrastructure;
 using LiveScoreReporter.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace LiveScoreReporter
 {
@@ -9,7 +11,10 @@ namespace LiveScoreReporter
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var connectionString = builder.Configuration.GetConnectionString("MatchDb");
             // Add services to the container.
+            builder.Services.AddDbContext<LiveScoreReporterDbContext>(options =>
+                options.UseSqlServer(connectionString));
 
             builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQ"));
             builder.Services.AddControllers();
