@@ -8,5 +8,7 @@
         public string Country { get; set; }
         public string? Logo { get; set; }
         public string? Flag { get; set; }
+
+        public ICollection<Game> Games { get; set; }
     }
 }

@@ -7,5 +7,7 @@
         public int Home { get; set; }
         public int Away{ get; set; }
         public string? Result{ get; set; }
+
+        public Game Game { get; set; }
     }
 }

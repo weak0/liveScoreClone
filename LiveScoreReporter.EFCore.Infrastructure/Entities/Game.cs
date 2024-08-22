@@ -11,5 +11,13 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Entities
         public int AwayTeamId { get; set; }
         public int ScoreId { get; set; }
         public int LeagueId { get; set; }
+
+
+        public Team HomeTeam { get; set; }
+        public Team AwayTeam { get; set; }
+        public Score Score { get; set; }
+        public League League { get; set; }
+
+        public ICollection<Event> Events { get; set; }
     }
 }
