@@ -1,6 +1,6 @@
 
+using LiveScoreReporter.Application.Services;
 using LiveScoreReporter.EFCore.Infrastructure;
-using LiveScoreReporter.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace LiveScoreReporter
@@ -21,7 +21,11 @@ namespace LiveScoreReporter
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddHttpClient();
+            builder.Services.AddScoped<IMatchService, MatchService>();
 
+            builder.Services
+                .AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly));
 
             var app = builder.Build();
 
