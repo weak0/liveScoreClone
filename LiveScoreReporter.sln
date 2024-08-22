@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveScoreReporter", "LiveScoreReporter\LiveScoreReporter.csproj", "{6CE77213-DCF1-4397-81A7-DA5B8985AABE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveScoreReporter", "LiveScoreReporter\LiveScoreReporter.csproj", "{6CE77213-DCF1-4397-81A7-DA5B8985AABE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveScoreReporter.EFCore.Infrastructure", "LiveScoreReporter.EFCore.Infrastructure\LiveScoreReporter.EFCore.Infrastructure.csproj", "{35463BC0-0287-4006-9DCE-090933BA27A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{6CE77213-DCF1-4397-81A7-DA5B8985AABE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CE77213-DCF1-4397-81A7-DA5B8985AABE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CE77213-DCF1-4397-81A7-DA5B8985AABE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35463BC0-0287-4006-9DCE-090933BA27A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35463BC0-0287-4006-9DCE-090933BA27A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35463BC0-0287-4006-9DCE-090933BA27A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35463BC0-0287-4006-9DCE-090933BA27A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
