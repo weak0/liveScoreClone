@@ -1,8 +1,9 @@
-﻿namespace LiveScoreReporter.Entities
+﻿namespace LiveScoreReporter.EFCore.Infrastructure.Entities
 {
     public class Event
     {
         public int Id { get; set; }
+       
         public int GameId { get; set; }
         public int TeamId { get; set; }
         public string Type { get; set; }
