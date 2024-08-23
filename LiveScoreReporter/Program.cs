@@ -1,6 +1,8 @@
 
 using LiveScoreReporter.Application.Services;
 using LiveScoreReporter.EFCore.Infrastructure;
+using LiveScoreReporter.EFCore.Infrastructure.Entities;
+using LiveScoreReporter.EFCore.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace LiveScoreReporter
@@ -23,6 +25,9 @@ namespace LiveScoreReporter
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IMatchService, MatchService>();
+            builder.Services.AddScoped<IGenericRepository<Game>, GamesRepository>();
+            builder.Services.AddScoped<IGenericRepository<Team>, TeamRepository>();
+            builder.Services.AddScoped<IGenericRepository<Event>, EventRepository>();
 
             builder.Services
                 .AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly));
