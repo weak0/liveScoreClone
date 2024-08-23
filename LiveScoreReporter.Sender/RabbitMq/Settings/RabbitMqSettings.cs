@@ -1,6 +1,6 @@
-﻿namespace LiveScoreReporter
+﻿namespace LiveScoreReporter.Sender.RabbitMq.Settings
 {
-    public class RabbitMQSettings
+    public class RabbitMqSettings
     {
         public string Uri { get; set; }
         public string ExchangeName { get; set; }
