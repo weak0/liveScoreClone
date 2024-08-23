@@ -1,28 +1,29 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Channels;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using LiveScoreReporter.Sender.RabbitMq.Settings;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
-namespace LiveScoreReporter.Controllers
+namespace LiveScoreReporter.Sender.RabbitMq
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class MatchController : ControllerBase, IDisposable
+    public class RabbitMqProducer : IQueueProducer, IDisposable
     {
         private readonly IConnection _connection;
         private readonly IModel _channel;
-        private readonly RabbitMQSettings _rabbitMQSettings;
+        private readonly RabbitMqSettings _rabbitMQSettings;
 
-        public MatchController(IOptions<RabbitMQSettings> rabbitMQSettings)
+        public RabbitMqProducer(IOptions<RabbitMqSettings> rabbitMQSettings)
         {
             _rabbitMQSettings = rabbitMQSettings.Value;
-           
+
             var factory = new ConnectionFactory()
             {
-                Uri = new Uri("amqp://guest:guest@localhost:5672"),
-                ClientProvidedName = "Match Controller Sender"
+                Uri = new Uri(_rabbitMQSettings.Uri),
+                ClientProvidedName = "Event Sender"
             };
 
             _connection = factory.CreateConnection();
@@ -33,15 +34,18 @@ namespace LiveScoreReporter.Controllers
             _channel.QueueBind(_rabbitMQSettings.QueueName, _rabbitMQSettings.ExchangeName, _rabbitMQSettings.RoutingKey, null);
         }
 
-        [HttpPost("event")]
-        public IActionResult SendMatchEvent([FromBody] string matchEvent)
+        public Task PublishAsync(string message)
         {
-            var body = Encoding.UTF8.GetBytes(matchEvent);
+            var body = Encoding.UTF8.GetBytes(message);
 
-            _channel.BasicPublish(_rabbitMQSettings.ExchangeName, _rabbitMQSettings.RoutingKey, null, body);
+            _channel.BasicPublish(exchange: _rabbitMQSettings.ExchangeName,
+                routingKey: _rabbitMQSettings.RoutingKey,
+                basicProperties: null,
+                body: body);
 
-            return Ok();
+            return Task.CompletedTask;
         }
+
         public void Dispose()
         {
             _channel?.Close();

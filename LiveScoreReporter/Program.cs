@@ -19,7 +19,6 @@ namespace LiveScoreReporter
             builder.Services.AddDbContext<LiveScoreReporterDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQ"));
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
