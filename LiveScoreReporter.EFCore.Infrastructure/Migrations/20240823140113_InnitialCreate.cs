@@ -5,7 +5,7 @@
 namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class innit : Migration
+    public partial class InnitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,8 +14,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
                 name: "Leagues",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Logo = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -30,8 +29,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
                 name: "Players",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -47,7 +45,8 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Home = table.Column<int>(type: "int", nullable: false),
                     Away = table.Column<int>(type: "int", nullable: false),
-                    Result = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Result = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GameId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -58,8 +57,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
                 name: "Teams",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Logo = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -75,7 +73,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
                     FixtureId = table.Column<int>(type: "int", nullable: false),
                     HomeTeamId = table.Column<int>(type: "int", nullable: false),
                     AwayTeamId = table.Column<int>(type: "int", nullable: false),
-                    ScoreId = table.Column<int>(type: "int", nullable: false),
+                    ScoreId = table.Column<int>(type: "int", nullable: true),
                     LeagueId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -91,8 +89,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
                         name: "FK_Games_Scores_ScoreId",
                         column: x => x.ScoreId,
                         principalTable: "Scores",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Games_Teams_AwayTeamId",
                         column: x => x.AwayTeamId,
@@ -190,7 +187,8 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
                 name: "IX_Games_ScoreId",
                 table: "Games",
                 column: "ScoreId",
-                unique: true);
+                unique: true,
+                filter: "[ScoreId] IS NOT NULL");
         }
 
         /// <inheritdoc />
