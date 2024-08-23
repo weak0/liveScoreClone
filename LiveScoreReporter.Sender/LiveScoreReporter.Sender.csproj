@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-LiveScoreReporter.Sender-202f7f33-f1ca-4bc8-a25d-e898e0c62b06</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Quartz" Version="3.13.0" />
+    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.13.0" />
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.0" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
+    <PackageReference Include="RestSharp" Version="111.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LiveScoreReporter\LiveScoreReporter.csproj" />
+  </ItemGroup>
+</Project>
