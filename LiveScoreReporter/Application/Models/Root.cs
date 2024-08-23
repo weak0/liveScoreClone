@@ -139,10 +139,10 @@ namespace LiveScoreReporter.Application.Models
     public class Fulltime
     {
         [JsonProperty("home")]
-        public int Home { get; set; }
+        public int? Home { get; set; }
 
         [JsonProperty("away")]
-        public int Away { get; set; }
+        public int? Away { get; set; }
     }
 
     public class Games
@@ -181,16 +181,16 @@ namespace LiveScoreReporter.Application.Models
     public class Goals
     {
         [JsonProperty("home")]
-        public int Home { get; set; }
+        public int? Home { get; set; }
 
         [JsonProperty("away")]
-        public int Away { get; set; }
+        public int? Away { get; set; }
 
         [JsonProperty("total")]
         public int? Total { get; set; }
 
         [JsonProperty("conceded")]
-        public int Conceded { get; set; }
+        public int? Conceded { get; set; }
 
         [JsonProperty("assists")]
         public int? Assists { get; set; }
@@ -202,10 +202,10 @@ namespace LiveScoreReporter.Application.Models
     public class Halftime
     {
         [JsonProperty("home")]
-        public int Home { get; set; }
+        public int? Home { get; set; }
 
         [JsonProperty("away")]
-        public int Away { get; set; }
+        public int? Away { get; set; }
     }
 
     public class Home : TeamBase
@@ -257,10 +257,10 @@ namespace LiveScoreReporter.Application.Models
     public class Paging
     {
         [JsonProperty("current")]
-        public int Current { get; set; }
+        public int? Current { get; set; }
 
         [JsonProperty("total")]
-        public int Total { get; set; }
+        public int? Total { get; set; }
     }
 
     public class Parameters
@@ -296,10 +296,10 @@ namespace LiveScoreReporter.Application.Models
         public object Commited { get; set; }
 
         [JsonProperty("scored")]
-        public int Scored { get; set; }
+        public int? Scored { get; set; }
 
         [JsonProperty("missed")]
-        public int Missed { get; set; }
+        public int? Missed { get; set; }
 
         [JsonProperty("saved")]
         public int? Saved { get; set; }
@@ -308,10 +308,10 @@ namespace LiveScoreReporter.Application.Models
     public class Periods
     {
         [JsonProperty("first")]
-        public int First { get; set; }
+        public int? First { get; set; }
 
         [JsonProperty("second")]
-        public int Second { get; set; }
+        public int? Second { get; set; }
     }
 
     public class Player
@@ -398,7 +398,7 @@ namespace LiveScoreReporter.Application.Models
         public List<object> Errors { get; set; }
 
         [JsonProperty("results")]
-        public int Results { get; set; }
+        public int? Results { get; set; }
 
         [JsonProperty("paging")]
         public Paging Paging { get; set; }
@@ -494,7 +494,7 @@ namespace LiveScoreReporter.Application.Models
         public string Short { get; set; }
 
         [JsonProperty("elapsed")]
-        public int Elapsed { get; set; }
+        public int? Elapsed { get; set; }
     }
 
     public class Substitute
@@ -555,13 +555,13 @@ namespace LiveScoreReporter.Application.Models
         public string Logo { get; set; }
 
         [JsonProperty("winner")]
-        public bool Winner { get; set; }
+        public bool? Winner { get; set; }
     }
 
     public class Time
     {
         [JsonProperty("elapsed")]
-        public int Elapsed { get; set; }
+        public int? Elapsed { get; set; }
 
         [JsonProperty("extra")]
         public int? Extra { get; set; }
