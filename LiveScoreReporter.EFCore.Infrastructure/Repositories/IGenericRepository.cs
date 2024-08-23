@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -9,6 +10,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
 {
     public interface IGenericRepository<T> where T : class
     {
+        DbContext Context { get; }
         IEnumerable<T> GetAll();
         Task<List<T>> GetAllAsync();
         T GetById(int id);

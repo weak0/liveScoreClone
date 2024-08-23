@@ -11,12 +11,14 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
 {
     public class TeamRepository : IGenericRepository<Team>, IDisposable
     {
-        private LiveScoreReporterDbContext _context;
+        private readonly LiveScoreReporterDbContext _context;
 
         public TeamRepository(LiveScoreReporterDbContext context)
         {
             _context = context;
         }
+
+        public DbContext Context => _context;
 
         public IEnumerable<Team> GetAll()
         {

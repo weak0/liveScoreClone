@@ -9,52 +9,55 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
 {
-    public class GamesRepository : IGenericRepository<Game>, IDisposable
+    public class PlayerRepository : IGenericRepository<Player>, IDisposable
     {
-        private LiveScoreReporterDbContext _context;
-        public GamesRepository(LiveScoreReporterDbContext context)
+        private readonly LiveScoreReporterDbContext _context;
+
+        public PlayerRepository(LiveScoreReporterDbContext context)
         {
             _context = context;
         }
-        public IEnumerable<Game> GetAll()
+
+        public DbContext Context => _context;
+
+        public IEnumerable<Player> GetAll()
         {
-           return _context.Games.ToList();
+            return _context.Players.ToList();
         }
 
-        public Task<List<Game>> GetAllAsync()
+        public Task<List<Player>> GetAllAsync()
         {
-            return _context.Games.ToListAsync();
+            return _context.Players.ToListAsync();
         }
 
-        public Game GetById(int id)
+        public Player GetById(int id)
         {
-            return _context.Games.Find(id);
+            return _context.Players.Find(id);
         }
 
-        public async Task<Game> GetByIdAsync(int id)
+        public async Task<Player> GetByIdAsync(int id)
         {
-            return await _context.Games.FindAsync(id);
+            return await _context.Players.FindAsync(id);
         }
-
 
         public bool Remove(int id)
         {
-            var game = _context.Games.Find(id);
-            
-            if (game is null) 
+            var player = _context.Players.Find(id);
+
+            if (player is null)
                 return false;
-            
-            _context.Games.Remove(game);
-            
+
+            _context.Players.Remove(player);
+
             return true;
         }
 
-        public void Add(in Game sender)
+        public void Add(in Player sender)
         {
             _context.Add(sender).State = EntityState.Added;
         }
 
-        public void Update(in Game sender)
+        public void Update(in Player sender)
         {
             _context.Entry(sender).State = EntityState.Modified;
         }
@@ -69,16 +72,17 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
             return _context.SaveChangesAsync();
         }
 
-        public Game Select(Expression<Func<Game, bool>> predicate)
+        public Player Select(Expression<Func<Player, bool>> predicate)
         {
-            return _context.Games
+            return _context.Players
                 .Where(predicate).FirstOrDefault()!;
         }
 
-        public async Task<Game> SelectAsync(Expression<Func<Game, bool>> predicate)
+        public async Task<Player> SelectAsync(Expression<Func<Player, bool>> predicate)
         {
-            return (await _context.Games
+            return (await _context.Players
                 .Where(predicate).FirstOrDefaultAsync())!;
+
         }
 
         private bool _disposed = false;

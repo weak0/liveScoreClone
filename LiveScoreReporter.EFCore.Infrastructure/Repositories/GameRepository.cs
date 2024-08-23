@@ -9,55 +9,55 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
 {
-    public class EventRepository : IGenericRepository<Event>, IDisposable
+    public class GameRepository : IGenericRepository<Game>, IDisposable
     {
         private readonly LiveScoreReporterDbContext _context;
-
-        public EventRepository(LiveScoreReporterDbContext context)
+        public GameRepository(LiveScoreReporterDbContext context)
         {
             _context = context;
         }
 
         public DbContext Context => _context;
 
-        public IEnumerable<Event> GetAll()
+        public IEnumerable<Game> GetAll()
         {
-            return _context.Events.ToList();
+           return _context.Games.ToList();
         }
 
-        public Task<List<Event>> GetAllAsync()
+        public Task<List<Game>> GetAllAsync()
         {
-            return _context.Events.ToListAsync();
+            return _context.Games.ToListAsync();
         }
 
-        public Event GetById(int id)
+        public Game GetById(int id)
         {
-            return _context.Events.Find(id);
+            return _context.Games.Find(id);
         }
 
-        public async Task<Event> GetByIdAsync(int id)
+        public async Task<Game> GetByIdAsync(int id)
         {
-            return await _context.Events.FindAsync(id);
+            return await _context.Games.FindAsync(id);
         }
+
 
         public bool Remove(int id)
         {
-            var matchEvent = _context.Events.Find(id);
-
-            if (matchEvent is null)
+            var game = _context.Games.Find(id);
+            
+            if (game is null) 
                 return false;
-
-            _context.Events.Remove(matchEvent);
-
+            
+            _context.Games.Remove(game);
+            
             return true;
         }
 
-        public void Add(in Event sender)
+        public void Add(in Game sender)
         {
             _context.Add(sender).State = EntityState.Added;
         }
 
-        public void Update(in Event sender)
+        public void Update(in Game sender)
         {
             _context.Entry(sender).State = EntityState.Modified;
         }
@@ -72,15 +72,15 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
             return _context.SaveChangesAsync();
         }
 
-        public Event Select(Expression<Func<Event, bool>> predicate)
+        public Game Select(Expression<Func<Game, bool>> predicate)
         {
-            return _context.Events
+            return _context.Games
                 .Where(predicate).FirstOrDefault()!;
         }
 
-        public async Task<Event> SelectAsync(Expression<Func<Event, bool>> predicate)
+        public async Task<Game> SelectAsync(Expression<Func<Game, bool>> predicate)
         {
-            return (await _context.Events
+            return (await _context.Games
                 .Where(predicate).FirstOrDefaultAsync())!;
         }
 

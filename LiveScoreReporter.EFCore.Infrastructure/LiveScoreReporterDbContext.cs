@@ -31,6 +31,18 @@ namespace LiveScoreReporter.EFCore.Infrastructure
                 .Property(g => g.FixtureId)
                 .ValueGeneratedNever();
 
+            modelBuilder.Entity<League>()
+                .Property(l => l.Id)
+                .ValueGeneratedNever();
+
+            modelBuilder.Entity<Team>()
+                .Property(t => t.Id)
+                .ValueGeneratedNever();
+
+            modelBuilder.Entity<Player>()
+                .Property(p => p.Id)
+                .ValueGeneratedNever();
+
             modelBuilder.Entity<Game>()
                 .HasOne(g => g.HomeTeam)
                 .WithMany(t => t.HomeGames)
