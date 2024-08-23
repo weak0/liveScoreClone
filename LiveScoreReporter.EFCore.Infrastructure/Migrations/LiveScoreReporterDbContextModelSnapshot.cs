@@ -104,10 +104,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.League", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Country")
                         .IsRequired()
@@ -131,10 +128,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.Player", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -173,10 +167,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.Team", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Logo")
                         .HasColumnType("nvarchar(max)");

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
 {
     [DbContext(typeof(LiveScoreReporterDbContext))]
-    [Migration("20240823131652_update-relations")]
-    partial class updaterelations
+    [Migration("20240823140113_InnitialCreate")]
+    partial class InnitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -107,10 +107,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.League", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Country")
                         .IsRequired()
@@ -134,10 +131,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.Player", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -176,10 +170,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.Team", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Logo")
                         .HasColumnType("nvarchar(max)");
