@@ -12,19 +12,8 @@ namespace LiveScoreReporter.Application.Models
         public string Name { get; set; }
     }
 
-    public class Away
+    public class Away : TeamBase
     {
-        [JsonProperty("id")]
-        public int Id { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("logo")]
-        public string Logo { get; set; }
-
-        [JsonProperty("winner")]
-        public bool Winner { get; set; }
     }
 
     public class Cards
@@ -219,19 +208,8 @@ namespace LiveScoreReporter.Application.Models
         public int Away { get; set; }
     }
 
-    public class Home
+    public class Home : TeamBase
     {
-        [JsonProperty("id")]
-        public int Id { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("logo")]
-        public string Logo { get; set; }
-
-        [JsonProperty("winner")]
-        public bool Winner { get; set; }
     }
 
     public class League
@@ -562,6 +540,22 @@ namespace LiveScoreReporter.Application.Models
 
         [JsonProperty("away")]
         public Away Away { get; set; }
+    }
+
+    public class TeamBase
+    {
+
+        [JsonProperty("id")]
+        public int Id { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("logo")]
+        public string Logo { get; set; }
+
+        [JsonProperty("winner")]
+        public bool Winner { get; set; }
     }
 
     public class Time
