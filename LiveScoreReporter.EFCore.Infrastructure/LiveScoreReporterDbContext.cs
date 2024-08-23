@@ -46,7 +46,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure
             modelBuilder.Entity<Game>()
                 .HasOne(g => g.Score)
                 .WithOne(s => s.Game)
-                .HasForeignKey<Game>(g => g.ScoreId);
+                .HasForeignKey<Score>(g => g.GameId);
 
             modelBuilder.Entity<Game>()
                 .HasOne(g=>g.League)
@@ -77,6 +77,12 @@ namespace LiveScoreReporter.EFCore.Infrastructure
                 .WithMany(p => p.AssistedEvents) 
                 .HasForeignKey(e => e.AssistPlayerId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Score>()
+                .HasOne(s => s.Game)
+                .WithOne(g => g.Score)
+                .HasForeignKey<Game>(g => g.ScoreId);
+
 
             base.OnModelCreating(modelBuilder);
         }

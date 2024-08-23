@@ -9,7 +9,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Entities
     
         public int HomeTeamId { get; set; }
         public int AwayTeamId { get; set; }
-        public int ScoreId { get; set; }
+        public int? ScoreId { get; set; }
         public int LeagueId { get; set; }
 
 
