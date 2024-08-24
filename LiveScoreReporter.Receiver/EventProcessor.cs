@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using static System.Formats.Asn1.AsnWriter;
 
 namespace LiveScoreReporter.Receiver
@@ -16,11 +17,13 @@ namespace LiveScoreReporter.Receiver
     {
         private readonly IGenericRepository<Event> _eventRepository;
         private readonly IGenericRepository<Score> _scoreRepository;
+        private ILogger<EventProcessor> _logger;
 
-        public EventProcessor(IGenericRepository<Event> eventRepository, IGenericRepository<Score> scoreRepository)
+        public EventProcessor(IGenericRepository<Event> eventRepository, IGenericRepository<Score> scoreRepository, ILogger<EventProcessor> logger)
         {
             _eventRepository = eventRepository;
             _scoreRepository = scoreRepository;
+            _logger = logger;
         }
 
         public async Task ProcessEventAsync(string message)
@@ -52,7 +55,7 @@ namespace LiveScoreReporter.Receiver
                     Details = eventData.Detail,
                     TeamId = eventData.Team.Id,
                     PlayerId = eventData.Player.Id,
-                    AssistPlayerId = eventData.Assist.Id
+                    AssistPlayerId = typeOfEvent == EventType.Goal ? eventData.Assist.Id : null, //todo wait for response from api support because there may be an error from them.
                 };
 
                 _eventRepository.Add(newEvent);
@@ -61,7 +64,7 @@ namespace LiveScoreReporter.Receiver
 
                 if (typeOfEvent == EventType.Goal)
                 {
-                    await UpdateScoreAsync(newEvent);
+                     UpdateScoreAsync(newEvent);
                 }
             }
             catch (Exception e)
@@ -70,22 +73,33 @@ namespace LiveScoreReporter.Receiver
                 throw;
             }
         }
-
-        public async Task UpdateScoreAsync(Event eventData)
+        public void UpdateScoreAsync(Event eventData)
         {
-            var score = await _scoreRepository.SelectAsync(s => s.GameId == eventData.GameId);
+            var scoreWithGame =  _scoreRepository
+                .Select(s => s.GameId == eventData.GameId, include: query => query.Include(s => s.Game));
 
-            if (eventData.Team.Id == score.Game.HomeTeamId)
+            _logger.LogInformation("Before update - Home: {Home}, Away: {Away}", scoreWithGame.Home, scoreWithGame.Away);
+
+            if (eventData.TeamId == scoreWithGame.Game.HomeTeamId)
             {
-                score.Home += 1;
+                _logger.LogInformation("Incrementing Home score for GameId: {GameId}", scoreWithGame.GameId);
+                scoreWithGame.Home += 1;
             }
-            else if (eventData.Team.Id == score.Game.AwayTeamId)
+            else if (eventData.TeamId == scoreWithGame.Game.AwayTeamId)
             {
-                score.Away += 1;
+                _logger.LogInformation("Incrementing Away score for GameId: {GameId}", scoreWithGame.GameId);
+                scoreWithGame.Away += 1;
+            }
+            else
+            {
+                _logger.LogWarning("TeamId {TeamId} did not match HomeTeamId or AwayTeamId for GameId {GameId}", eventData.TeamId, scoreWithGame.GameId);
             }
 
-            _scoreRepository.Update(score);
-            await _scoreRepository.SaveAsync();
+            _logger.LogInformation("After update - Home: {Home}, Away: {Away}", scoreWithGame.Home, scoreWithGame.Away);
+
+
+            _scoreRepository.Update(scoreWithGame);
+             _scoreRepository.Save();
         }
 
         public EventType ConvertToEnum(string value)
