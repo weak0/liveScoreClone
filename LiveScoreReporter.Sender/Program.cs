@@ -2,8 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Quartz;
 using LiveScoreReporter.Sender.Jobs;
-using LiveScoreReporter.Sender.RabbitMq.Settings;
 using LiveScoreReporter.Sender.RabbitMq;
+using LiveScoreReporter.Shared.RabbitMq.Settings;
 using RestSharp;
 
 namespace LiveScoreReporter.Sender
