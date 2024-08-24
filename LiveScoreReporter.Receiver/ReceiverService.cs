@@ -48,14 +48,12 @@ namespace LiveScoreReporter.Receiver
 
                 try
                 {
-                    // Tworzenie nowego zakresu dla każdego przetwarzanego eventu
                     using (var scope = _serviceScopeFactory.CreateScope())
                     {
                         var eventProcessor = scope.ServiceProvider.GetRequiredService<IEventProcessor>();
                         await eventProcessor.ProcessEventAsync(message);
                     }
 
-                    // Potwierdzenie przetworzenia wiadomości
                     _channel.BasicAck(ea.DeliveryTag, false);
                     _logger.LogInformation("Message processed and acknowledged.");
                 }
@@ -67,10 +65,12 @@ namespace LiveScoreReporter.Receiver
                 }
             };
 
+            _channel.BasicQos(0, 1, false);
             _channel.BasicConsume(queue: _rabbitMQSettings.QueueName, autoAck: false, consumer: consumer);
 
             return Task.CompletedTask;
         }
+
 
         public override void Dispose()
         {
