@@ -1,4 +1,4 @@
-﻿namespace LiveScoreReporter.Sender.RabbitMq.Settings
+﻿namespace LiveScoreReporter.Shared.RabbitMq.Settings
 {
     public class RabbitMqSettings
     {

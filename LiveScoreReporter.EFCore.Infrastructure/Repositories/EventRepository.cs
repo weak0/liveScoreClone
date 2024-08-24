@@ -72,17 +72,30 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
             return _context.SaveChangesAsync();
         }
 
-        public Event Select(Expression<Func<Event, bool>> predicate)
+        public Event Select(Expression<Func<Event, bool>> predicate, Func<IQueryable<Event>, IQueryable<Event>> include = null)
         {
-            return _context.Events
-                .Where(predicate).FirstOrDefault()!;
+            IQueryable<Event> query = _context.Set<Event>();
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            return query.FirstOrDefault(predicate);
         }
 
-        public async Task<Event> SelectAsync(Expression<Func<Event, bool>> predicate)
+        public async Task<Event> SelectAsync(Expression<Func<Event, bool>> predicate, Func<IQueryable<Event>, IQueryable<Event>> include = null)
         {
-            return (await _context.Events
-                .Where(predicate).FirstOrDefaultAsync())!;
+            IQueryable<Event> query = _context.Set<Event>();
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            return await query.FirstOrDefaultAsync(predicate);
         }
+
 
         private bool _disposed = false;
 
