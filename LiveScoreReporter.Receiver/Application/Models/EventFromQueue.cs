@@ -19,10 +19,10 @@ namespace LiveScoreReporter.Receiver.Application.Models
     public class Player
     {
         [JsonProperty("id")]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [JsonProperty("name")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 
     public class EventFromQueue
