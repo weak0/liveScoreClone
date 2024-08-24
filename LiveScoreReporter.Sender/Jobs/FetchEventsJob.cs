@@ -44,6 +44,8 @@ namespace LiveScoreReporter.Sender.Jobs
                 // Iterowanie po eventach w odpowiedzi
                 foreach (var eventItem in json["response"])
                 {
+                    eventItem["fixtureId"] = fixtureId;
+
                     // Konwertowanie pojedynczego eventu do JSON stringa
                     var eventJson = eventItem.ToString();
 
