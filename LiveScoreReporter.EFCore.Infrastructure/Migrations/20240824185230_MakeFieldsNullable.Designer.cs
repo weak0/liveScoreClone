@@ -4,6 +4,7 @@ using LiveScoreReporter.EFCore.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
 {
     [DbContext(typeof(LiveScoreReporterDbContext))]
-    partial class LiveScoreReporterDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240824185230_MakeFieldsNullable")]
+    partial class MakeFieldsNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,7 +67,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("Events", (string)null);
+                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.Game", b =>
@@ -96,7 +99,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
                         .IsUnique()
                         .HasFilter("[ScoreId] IS NOT NULL");
 
-                    b.ToTable("Games", (string)null);
+                    b.ToTable("Games");
                 });
 
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.League", b =>
@@ -120,7 +123,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Leagues", (string)null);
+                    b.ToTable("Leagues");
                 });
 
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.Player", b =>
@@ -134,7 +137,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Players", (string)null);
+                    b.ToTable("Players");
                 });
 
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.Score", b =>
@@ -159,7 +162,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Scores", (string)null);
+                    b.ToTable("Scores");
                 });
 
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.Team", b =>
@@ -176,7 +179,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Teams", (string)null);
+                    b.ToTable("Teams");
                 });
 
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.Event", b =>
