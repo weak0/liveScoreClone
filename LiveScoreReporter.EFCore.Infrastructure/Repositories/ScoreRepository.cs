@@ -5,11 +5,12 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
+using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
 {
-    public class ScoreRepository : IGenericRepository<Score>, IDisposable
+    public class ScoreRepository : IScoreRepository, IDisposable
     {
         private readonly LiveScoreReporterDbContext _context;
 
