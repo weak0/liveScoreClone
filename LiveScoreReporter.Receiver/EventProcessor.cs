@@ -1,5 +1,4 @@
 ﻿using LiveScoreReporter.EFCore.Infrastructure.Entities;
-using LiveScoreReporter.EFCore.Infrastructure.Repositories;
 using LiveScoreReporter.Receiver.Application.Models;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Newtonsoft.Json;
@@ -10,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using static System.Formats.Asn1.AsnWriter;
+using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
 
 namespace LiveScoreReporter.Receiver
 {

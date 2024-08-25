@@ -1,7 +1,7 @@
 ﻿using LiveScoreReporter.Application.Models;
 using LiveScoreReporter.Controllers;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
-using LiveScoreReporter.EFCore.Infrastructure.Repositories;
+using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
 using LiveScoreReporter.MockApiAssets;
 using Newtonsoft.Json;
 using RestSharp;
