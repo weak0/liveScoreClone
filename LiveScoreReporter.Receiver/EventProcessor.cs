@@ -20,20 +20,20 @@ namespace LiveScoreReporter.Receiver
         private readonly IEventRepository _eventRepository;
         private readonly IScoreRepository _scoreRepository;
         private ILogger<EventProcessor> _logger;
-        private readonly IHubContext<MatchHub> _hubContext;
+        private readonly HttpClient _httpClient;
 
-        public EventProcessor(IEventRepository eventRepository, IScoreRepository scoreRepository, ILogger<EventProcessor> logger, IHubContext<MatchHub> hubContext)
+        public EventProcessor(IEventRepository eventRepository, IScoreRepository scoreRepository, ILogger<EventProcessor> logger, HttpClient httpClient)
         {
             _eventRepository = eventRepository;
             _scoreRepository = scoreRepository;
             _logger = logger;
-            _hubContext = hubContext;
+            _httpClient = httpClient;
         }
 
         public async Task ProcessEventAsync(string message)
         {
-            using (var transaction = await _eventRepository.Context.Database.BeginTransactionAsync())
-            {
+            //using (var transaction = await _eventRepository.Context.Database.BeginTransactionAsync())
+            //{
                 try
                 {
                     var eventData = JsonConvert.DeserializeObject<EventFromQueue>(message);
@@ -67,23 +67,23 @@ namespace LiveScoreReporter.Receiver
                     _eventRepository.Add(newEvent);
                     await _eventRepository.SaveAsync();
 
-
                     if (typeOfEvent == EventType.Goal)
                     {
                         UpdateScoreAsync(newEvent);
                     }
 
-                    await _hubContext.Clients.All.SendAsync("ReceiveEvent", newEvent);
+                    await SendEventToApi(newEvent);
 
-                    await transaction.CommitAsync();
+
+                    //await transaction.CommitAsync();
                 }
                 catch (Exception e)
                 {
-                    await transaction.RollbackAsync();
+                  //  await transaction.RollbackAsync();
                     Console.WriteLine(e);
                     throw;
                 }
-            }
+            //}
         }
         public void UpdateScoreAsync(Event eventData)
         {
@@ -112,6 +112,15 @@ namespace LiveScoreReporter.Receiver
 
             _scoreRepository.Update(scoreWithGame);
             _scoreRepository.Save();
+        }
+
+        private async Task SendEventToApi(Event newEvent)
+        {
+            var json = JsonConvert.SerializeObject(newEvent);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync("http://localhost:5254/api/Signalr/ProcessEvent", content);
+            response.EnsureSuccessStatusCode();
         }
 
         public EventType ConvertToEnum(string value)

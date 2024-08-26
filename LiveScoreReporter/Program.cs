@@ -25,6 +25,7 @@ namespace LiveScoreReporter
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSignalR();
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IMatchService, MatchService>();
@@ -38,22 +39,23 @@ namespace LiveScoreReporter
             builder.Services.AddScoped<IGameService, GameService>();
             builder.Services.AddScoped<IEventService, EventService>();
             builder.Services.AddScoped<ISerializerService, SerializerService>();
-            builder.Services.AddSignalR();
 
-            builder.Services.AddCors(options => 
+            builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll", //only for test purposes
+                options.AddPolicy("AllowSpecificOrigin", // tylko dla okreœlonego pochodzenia
                     builder =>
                     {
-                        builder.AllowAnyOrigin()
+                        builder.WithOrigins("http://localhost:4200") // podaj dok³adny adres frontendu
                             .AllowAnyMethod()
-                            .AllowAnyHeader();
+                            .AllowAnyHeader()
+                            .AllowCredentials(); // pozwala na uwierzytelnianie
                     });
             });
 
             var app = builder.Build();
-
-            app.MapHub<MatchHub>("/matchHub");
+            app.UseRouting();
+            app.UseCors("AllowSpecificOrigin");
+            
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -62,14 +64,16 @@ namespace LiveScoreReporter
                 app.UseSwaggerUI();
             }
 
-            app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
-
-            app.MapControllers();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<MatchHub>("/matchHub");
+                endpoints.MapControllers();
+            });
 
             app.Run();
         }
