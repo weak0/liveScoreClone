@@ -32,60 +32,58 @@ namespace LiveScoreReporter.Receiver
 
         public async Task ProcessEventAsync(string message)
         {
-            //using (var transaction = await _eventRepository.Context.Database.BeginTransactionAsync())
-            //{
-                try
+            await Task.Delay(3000);
+
+            try
+            {
+                var eventData = JsonConvert.DeserializeObject<EventFromQueue>(message);
+
+                var typeOfEvent = ConvertToEnum(eventData.Type);
+
+                var existingEvent = await _eventRepository.SelectAsync(e =>
+                    e.GameId == eventData.FixtureId &&
+                    e.Time == eventData.Time.Elapsed &&
+                    e.Type == typeOfEvent &&
+                    e.Details == eventData.Detail &&
+                    e.TeamId == eventData.Team.Id &&
+                    e.PlayerId == eventData.Player.Id);
+
+                if (existingEvent != null)
                 {
-                    var eventData = JsonConvert.DeserializeObject<EventFromQueue>(message);
-
-                    var typeOfEvent = ConvertToEnum(eventData.Type);
-
-                    var existingEvent = await _eventRepository.SelectAsync(e =>
-                        e.GameId == eventData.FixtureId &&
-                        e.Time == eventData.Time.Elapsed &&
-                        e.Type == typeOfEvent &&
-                        e.Details == eventData.Detail &&
-                        e.TeamId == eventData.Team.Id &&
-                        e.PlayerId == eventData.Player.Id);
-
-                    if (existingEvent != null)
-                    {
-                        return;
-                    }
-
-                    var newEvent = new Event
-                    {
-                        GameId = eventData.FixtureId,
-                        Time = eventData.Time.Elapsed,
-                        Type = typeOfEvent,
-                        Details = eventData.Detail,
-                        TeamId = eventData.Team.Id,
-                        PlayerId = eventData.Player.Id,
-                        AssistPlayerId = typeOfEvent == EventType.Goal ? eventData.Assist.Id : null, //todo wait for response from api support because there may be an error from them.
-                    };
-
-                    _eventRepository.Add(newEvent);
-                    await _eventRepository.SaveAsync();
-
-                    if (typeOfEvent == EventType.Goal)
-                    {
-                        UpdateScoreAsync(newEvent);
-                    }
-
-                    await SendEventToApi(newEvent);
-
-
-                    //await transaction.CommitAsync();
+                    return;
                 }
-                catch (Exception e)
+
+                var newEvent = new Event
                 {
-                  //  await transaction.RollbackAsync();
-                    Console.WriteLine(e);
-                    throw;
+                    GameId = eventData.FixtureId,
+                    Time = eventData.Time.Elapsed,
+                    Type = typeOfEvent,
+                    Details = eventData.Detail,
+                    TeamId = eventData.Team.Id,
+                    PlayerId = eventData.Player.Id,
+                    AssistPlayerId = typeOfEvent == EventType.Goal ? eventData.Assist.Id : null, //todo wait for response from api support because there may be an error from them.
+                };
+
+                _eventRepository.Add(newEvent);
+                await _eventRepository.SaveAsync();
+
+                if (typeOfEvent == EventType.Goal)
+                {
+                    await UpdateScoreAsync(newEvent);
                 }
-            //}
+
+                await SendEventToApi(newEvent);
+
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
-        public void UpdateScoreAsync(Event eventData)
+        public async Task UpdateScoreAsync(Event eventData)
         {
             var scoreWithGame = _scoreRepository
                 .Select(s => s.GameId == eventData.GameId, include: query => query.Include(s => s.Game));
