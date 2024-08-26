@@ -1,0 +1,48 @@
+.match-list {
+  display: flex;
+  flex-wrap: wrap; /* Pozwala na zawijanie elementów do następnego wiersza */
+  gap: 20px; /* Odstęp między kartami */
+  justify-content: center; /* Centruje wszystkie karty */
+}
+
+.match-card {
+  flex: 1 1 calc(33.333% - 40px); /* Karty zajmują 1/3 szerokości dostępnej przestrzeni */
+  max-width: 400px; /* Maksymalna szerokość karty */
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+  display: flex; /* Flexbox w samej karcie dla lepszego układu wewnątrz */
+  justify-content: space-between; /* Rozstawienie zawartości na całej szerokości karty */
+  align-items: center; /* Centruje elementy w pionie */
+}
+
+.match-card:hover {
+  background-color: #f0f0f0;
+}
+
+.team {
+  display: flex;
+  flex-direction: column; /* Ustawienie elementów drużyny w kolumnie, jeden pod drugim */
+  align-items: center; /* Centruje elementy drużyny w poziomie */
+  gap: 5px; /* Mały odstęp między logiem a nazwą drużyny */
+}
+
+.team img {
+  width: 50px; /* Rozmiar loga */
+  height: 50px;
+}
+
+.result {
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-align: center; /* Centruje tekst wyniku */
+}
+
+.team-name {
+  text-align: center; /* Centruje tekst nazw drużyn */
+}

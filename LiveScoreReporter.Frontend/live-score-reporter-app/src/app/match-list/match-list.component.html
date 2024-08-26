@@ -1,0 +1,13 @@
+<div class="match-list">
+  <div class="match-card" *ngFor="let match of matches" (click)="navigateToMatch(match.GameId)">
+    <div class="team">
+      <img [src]="match.HomeTeamLogo" alt="{{ match.HomeTeamName }} Logo">
+      <span class="team-name">{{ match.HomeTeamName }}</span>
+    </div>
+    <div class="result">{{ match.GameResult }}</div>
+    <div class="team">
+      <img [src]="match.AwayTeamLogo" alt="{{ match.AwayTeamName }} Logo">
+      <span class="team-name">{{ match.AwayTeamName }}</span>
+    </div>
+  </div>
+</div>
