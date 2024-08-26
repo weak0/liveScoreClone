@@ -1,1 +1,29 @@
-<p>match-detail works!</p>
+<div class="match-detail">
+    <h2 style="text-align: center;">Szczegóły meczu</h2>
+  
+    <div class="match-info">
+      <div class="team-info">
+        <img [src]="match?.HomeTeamLogo" alt="{{ match?.HomeTeamName }} Logo">
+        <span>{{ match?.HomeTeamName }}</span>
+      </div>
+  
+      <div class="match-result-container">
+        <div class="match-result">
+          <span>{{ match?.GameResult }}</span>
+        </div>
+      </div>
+  
+      <div class="team-info">
+          <img [src]="match?.AwayTeamLogo" alt="{{ match?.AwayTeamName }} Logo">
+          <span>{{ match?.AwayTeamName }}</span>
+      </div>
+    </div>
+  
+    <div class="events">
+      <div *ngFor="let event of events" class="event">
+        <p><strong>{{ event.Time }}'</strong> - {{ event.TeamName }} - {{ event.Details }}</p>
+        <p>Gracz: {{ event.PlayerName }} <span *ngIf="event.AssistPlayerName">, Asysta: {{ event.AssistPlayerName }}</span></p>
+      </div>
+    </div>
+  </div>
+  

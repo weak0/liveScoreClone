@@ -16,11 +16,15 @@ export interface Match {
 })
 export class MatchService {
 
-  private apiUrl = 'http://localhost:5254/games/all'; 
+  private apiUrl = 'http://localhost:5254/games'; 
 
   constructor(private http: HttpClient) { }
 
   getMatches(): Observable<Match[]> {
-    return this.http.get<Match[]>(this.apiUrl);
+    return this.http.get<Match[]>(`${this.apiUrl}/all`);
+  }
+
+  getMatch(gameId: number): Observable<Match> {
+    return this.http.get<Match>(`${this.apiUrl}/${gameId}`);
   }
 }
