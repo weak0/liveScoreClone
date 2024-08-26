@@ -35,6 +35,17 @@ namespace LiveScoreReporter
             builder.Services.AddScoped<ILeagueRepository, LeagueRepository>();
             builder.Services.AddScoped<IFrontendService, FrontendService>();
 
+            builder.Services.AddCors(options => 
+            {
+                options.AddPolicy("AllowAll", //only for test purposes
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -43,6 +54,8 @@ namespace LiveScoreReporter
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
 
