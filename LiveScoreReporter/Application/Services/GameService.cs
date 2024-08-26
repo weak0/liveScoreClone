@@ -17,6 +17,30 @@ namespace LiveScoreReporter.Application.Services
             _gameRepository = gameRepository;
             _serializerService = serializerService;
         }
+        
+        public async Task<Game> GetSingleGameWithDetailsAsync(int gameId)
+        {
+            return await _gameRepository.GetGameWithScoreAndTeamsAsync(gameId);
+        }
+
+        public GameWithDetailsDto MapSingleGameToDto(Game gamesWithDetails)
+        {
+            return new GameWithDetailsDto()
+            {
+                GameId = gamesWithDetails.FixtureId,
+                HomeTeamName = gamesWithDetails.HomeTeam.Name,
+                HomeTeamLogo = gamesWithDetails.HomeTeam.Logo,
+                AwayTeamName = gamesWithDetails.AwayTeam.Name,
+                AwayTeamLogo = gamesWithDetails.AwayTeam.Logo,
+                GameResult = $"{gamesWithDetails.Score.Home}:{gamesWithDetails.Score.Away}"
+            };
+        }
+
+        public string SerializeSingleGameToJson(GameWithDetailsDto gameWithDetailsDtos)
+        {
+            return _serializerService.SerializeObjectToJson(gameWithDetailsDtos);
+        }
+
         public async Task<List<Game>> GetGamesWithDetailsAsync()
         {
             return await _gameRepository.GetAllGamesWithScoreAndTeamsAsync();
