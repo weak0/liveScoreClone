@@ -35,9 +35,6 @@ namespace LiveScoreReporter
             builder.Services.AddScoped<ILeagueRepository, LeagueRepository>();
             builder.Services.AddScoped<IFrontendService, FrontendService>();
 
-            builder.Services
-                .AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly));
-
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

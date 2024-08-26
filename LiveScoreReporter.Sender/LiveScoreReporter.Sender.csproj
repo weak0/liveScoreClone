@@ -18,6 +18,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LiveScoreReporter.Shared\LiveScoreReporter.Shared.csproj" />
-    <ProjectReference Include="..\LiveScoreReporter\LiveScoreReporter.csproj" />
   </ItemGroup>
 </Project>

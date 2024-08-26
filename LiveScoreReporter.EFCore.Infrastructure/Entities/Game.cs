@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-
-namespace LiveScoreReporter.EFCore.Infrastructure.Entities
+﻿namespace LiveScoreReporter.EFCore.Infrastructure.Entities
 {
     public class Game
     {
