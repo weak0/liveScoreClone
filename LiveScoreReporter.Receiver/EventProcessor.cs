@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using static System.Formats.Asn1.AsnWriter;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
+using LiveScoreReporter.Shared.Hub;
+using Microsoft.AspNetCore.SignalR;
 
 namespace LiveScoreReporter.Receiver
 {
@@ -18,12 +20,14 @@ namespace LiveScoreReporter.Receiver
         private readonly IEventRepository _eventRepository;
         private readonly IScoreRepository _scoreRepository;
         private ILogger<EventProcessor> _logger;
+        private readonly IHubContext<MatchHub> _hubContext;
 
-        public EventProcessor(IEventRepository eventRepository, IScoreRepository scoreRepository, ILogger<EventProcessor> logger)
+        public EventProcessor(IEventRepository eventRepository, IScoreRepository scoreRepository, ILogger<EventProcessor> logger, IHubContext<MatchHub> hubContext)
         {
             _eventRepository = eventRepository;
             _scoreRepository = scoreRepository;
             _logger = logger;
+            _hubContext = hubContext;
         }
 
         public async Task ProcessEventAsync(string message)
@@ -68,6 +72,8 @@ namespace LiveScoreReporter.Receiver
                     {
                         UpdateScoreAsync(newEvent);
                     }
+
+                    await _hubContext.Clients.All.SendAsync("ReceiveEvent", newEvent);
 
                     await transaction.CommitAsync();
                 }

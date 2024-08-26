@@ -6,6 +6,7 @@ using LiveScoreReporter.EFCore.Infrastructure.Entities;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
 using LiveScoreReporter.MockApiAssets.Services;
+using LiveScoreReporter.Shared.Hub;
 using Microsoft.EntityFrameworkCore;
 
 namespace LiveScoreReporter
@@ -37,6 +38,7 @@ namespace LiveScoreReporter
             builder.Services.AddScoped<IGameService, GameService>();
             builder.Services.AddScoped<IEventService, EventService>();
             builder.Services.AddScoped<ISerializerService, SerializerService>();
+            builder.Services.AddSignalR();
 
             builder.Services.AddCors(options => 
             {
@@ -50,6 +52,8 @@ namespace LiveScoreReporter
             });
 
             var app = builder.Build();
+
+            app.MapHub<MatchHub>("/matchHub");
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
