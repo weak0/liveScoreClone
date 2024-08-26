@@ -28,54 +28,60 @@ namespace LiveScoreReporter.Receiver
 
         public async Task ProcessEventAsync(string message)
         {
-            try
+            using (var transaction = await _eventRepository.Context.Database.BeginTransactionAsync())
             {
-                var eventData = JsonConvert.DeserializeObject<EventFromQueue>(message);
-
-                var typeOfEvent = ConvertToEnum(eventData.Type);
-
-                var existingEvent = await _eventRepository.SelectAsync(e =>
-                    e.GameId == eventData.FixtureId &&
-                    e.Time == eventData.Time.Elapsed &&
-                    e.Type == typeOfEvent &&
-                    e.Details == eventData.Detail &&
-                    e.TeamId == eventData.Team.Id &&
-                    e.PlayerId == eventData.Player.Id);
-
-                if (existingEvent != null)
+                try
                 {
-                    return;
+                    var eventData = JsonConvert.DeserializeObject<EventFromQueue>(message);
+
+                    var typeOfEvent = ConvertToEnum(eventData.Type);
+
+                    var existingEvent = await _eventRepository.SelectAsync(e =>
+                        e.GameId == eventData.FixtureId &&
+                        e.Time == eventData.Time.Elapsed &&
+                        e.Type == typeOfEvent &&
+                        e.Details == eventData.Detail &&
+                        e.TeamId == eventData.Team.Id &&
+                        e.PlayerId == eventData.Player.Id);
+
+                    if (existingEvent != null)
+                    {
+                        return;
+                    }
+
+                    var newEvent = new Event
+                    {
+                        GameId = eventData.FixtureId,
+                        Time = eventData.Time.Elapsed,
+                        Type = typeOfEvent,
+                        Details = eventData.Detail,
+                        TeamId = eventData.Team.Id,
+                        PlayerId = eventData.Player.Id,
+                        AssistPlayerId = typeOfEvent == EventType.Goal ? eventData.Assist.Id : null, //todo wait for response from api support because there may be an error from them.
+                    };
+
+                    _eventRepository.Add(newEvent);
+                    await _eventRepository.SaveAsync();
+
+
+                    if (typeOfEvent == EventType.Goal)
+                    {
+                        UpdateScoreAsync(newEvent);
+                    }
+
+                    await transaction.CommitAsync();
                 }
-
-                var newEvent = new Event
+                catch (Exception e)
                 {
-                    GameId = eventData.FixtureId,
-                    Time = eventData.Time.Elapsed,
-                    Type = typeOfEvent,
-                    Details = eventData.Detail,
-                    TeamId = eventData.Team.Id,
-                    PlayerId = eventData.Player.Id,
-                    AssistPlayerId = typeOfEvent == EventType.Goal ? eventData.Assist.Id : null, //todo wait for response from api support because there may be an error from them.
-                };
-
-                _eventRepository.Add(newEvent);
-                await _eventRepository.SaveAsync();
-
-
-                if (typeOfEvent == EventType.Goal)
-                {
-                     UpdateScoreAsync(newEvent);
+                    await transaction.RollbackAsync();
+                    Console.WriteLine(e);
+                    throw;
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
             }
         }
         public void UpdateScoreAsync(Event eventData)
         {
-            var scoreWithGame =  _scoreRepository
+            var scoreWithGame = _scoreRepository
                 .Select(s => s.GameId == eventData.GameId, include: query => query.Include(s => s.Game));
 
             _logger.LogInformation("Before update - Home: {Home}, Away: {Away}", scoreWithGame.Home, scoreWithGame.Away);
@@ -99,7 +105,7 @@ namespace LiveScoreReporter.Receiver
 
 
             _scoreRepository.Update(scoreWithGame);
-             _scoreRepository.Save();
+            _scoreRepository.Save();
         }
 
         public EventType ConvertToEnum(string value)
