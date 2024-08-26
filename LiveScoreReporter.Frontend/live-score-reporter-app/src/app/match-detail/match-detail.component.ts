@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { EventService, Event } from '../event.service';
+import { EventService, MatchEvent } from '../event.service';
 import { MatchService, Match } from '../match.service';
 import { faFutbol, faExclamationTriangle, faExchangeAlt, faBook } from '@fortawesome/free-solid-svg-icons';
+import { SignalRService } from '../signalr.service';
 
 @Component({
   selector: 'app-match-detail',
@@ -11,7 +12,7 @@ import { faFutbol, faExclamationTriangle, faExchangeAlt, faBook } from '@fortawe
 })
 export class MatchDetailComponent implements OnInit {
   gameId!: number;
-  events: Event[] = [];
+  events: MatchEvent[] = [];
   match!: Match;
 
   faGoal = faFutbol;
@@ -22,28 +23,43 @@ export class MatchDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private eventService: EventService,
-    private matchService: MatchService
+    private matchService: MatchService,
+    private signalRService: SignalRService
   ) {}
 
   ngOnInit(): void {
     this.gameId = Number(this.route.snapshot.paramMap.get('id'));
-    this.loadMatchDetails();
-    this.loadEvents();
+    this.signalRService.startConnection();
+    this.signalRService.addEventListener(this); 
+    this.refreshData(); // Początkowe załadowanie danych
   }
 
+  // Metoda wywoływana przez SignalR po otrzymaniu nowego zdarzenia
+  handleNewEvent(newEvent: MatchEvent): void {
+    this.refreshData(); // Odśwież wszystkie dane po otrzymaniu nowego zdarzenia
+  }
+
+  // Metoda do ponownego pobierania wszystkich danych
+  refreshData(): void {
+    console.log('Refreshing data...');
+    this.loadMatchDetails(); // Pobierz szczegóły meczu
+    this.loadEvents();       // Pobierz pełną listę wydarzeń z bazy danych
+  }
+
+  // Pobieranie szczegółów meczu
   loadMatchDetails(): void {
     this.matchService.getMatch(this.gameId).subscribe((match: Match) => {
       this.match = match;
     });
   }
 
+  // Pobieranie wszystkich wydarzeń
   loadEvents(): void {
-    this.eventService.getEvents(this.gameId).subscribe((data: Event[]) => {
-      const newEvents = data.filter(event => !this.events.some(e => e.Time === event.Time && e.Details === event.Details));
-      this.events = [...this.events, ...newEvents];
+    this.eventService.getEvents(this.gameId).subscribe((data: MatchEvent[]) => {
+      this.events = data; // Zastąpienie starej listy nowymi danymi
     });
   }
-
+  
   getEventIcon(eventType: number) {
     switch (eventType) {
       case 0: return this.faGoal; 
@@ -52,8 +68,5 @@ export class MatchDetailComponent implements OnInit {
       default: return this.faOther; 
     }
   }
-
-  refreshEvents(): void {
-    this.loadEvents();
-  }
+  
 }

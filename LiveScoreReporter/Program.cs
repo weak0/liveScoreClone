@@ -6,6 +6,7 @@ using LiveScoreReporter.EFCore.Infrastructure.Entities;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
 using LiveScoreReporter.MockApiAssets.Services;
+using LiveScoreReporter.Shared.Hub;
 using Microsoft.EntityFrameworkCore;
 
 namespace LiveScoreReporter
@@ -24,6 +25,7 @@ namespace LiveScoreReporter
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSignalR();
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IMatchService, MatchService>();
@@ -38,18 +40,22 @@ namespace LiveScoreReporter
             builder.Services.AddScoped<IEventService, EventService>();
             builder.Services.AddScoped<ISerializerService, SerializerService>();
 
-            builder.Services.AddCors(options => 
+            builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll", //only for test purposes
+                options.AddPolicy("AllowSpecificOrigin", 
                     builder =>
                     {
-                        builder.AllowAnyOrigin()
+                        builder.WithOrigins("http://localhost:4200") 
                             .AllowAnyMethod()
-                            .AllowAnyHeader();
+                            .AllowAnyHeader()
+                            .AllowCredentials();
                     });
             });
 
             var app = builder.Build();
+            app.UseRouting();
+            app.UseCors("AllowSpecificOrigin");
+            
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -58,14 +64,16 @@ namespace LiveScoreReporter
                 app.UseSwaggerUI();
             }
 
-            app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
-
-            app.MapControllers();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<MatchHub>("/matchHub");
+                endpoints.MapControllers();
+            });
 
             app.Run();
         }

@@ -19,6 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
@@ -32,6 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LiveScoreReporter.EFCore.Infrastructure\LiveScoreReporter.EFCore.Infrastructure.csproj" />
+    <ProjectReference Include="..\LiveScoreReporter.Shared\LiveScoreReporter.Shared.csproj" />
   </ItemGroup>
 
 </Project>
