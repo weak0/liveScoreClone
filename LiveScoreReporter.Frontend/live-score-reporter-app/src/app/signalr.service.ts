@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { MatchDetailComponent } from './match-detail/match-detail.component';
 
@@ -8,11 +8,11 @@ import { MatchDetailComponent } from './match-detail/match-detail.component';
 export class SignalRService {
   private hubConnection: signalR.HubConnection | undefined;
 
-  constructor(private ngZone: NgZone) {}  // Dodanie NgZone
+  constructor() {}
 
   public startConnection(): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('http://localhost:5254/matchHub') // URL do Twojego SignalR hub
+      .withUrl('http://localhost:5254/matchHub')
       .build();
 
     this.hubConnection
@@ -24,16 +24,14 @@ export class SignalRService {
   public addEventListener(component: MatchDetailComponent): void {
     if (this.hubConnection) {
       this.hubConnection.on('ReceiveEventUpdate', (gameId: string, eventData: string) => {
-        console.log(`${Number(gameId)} and ${component.gameId}`);
+        console.log('Received event for game:', gameId);
         const eventObj = JSON.parse(eventData);
-    
+
         if (Number(gameId) === component.gameId) {
-            console.log('Processing event:', eventObj);
-            component.handleNewEvent(eventObj);
-        } else {
-            console.log('Event does not match current game ID.');
+          console.log('Processing event:', eventObj);
+          component.handleNewEvent(eventObj); // Wywołanie metody handleNewEvent w komponencie
         }
-    });
+      });
     } else {
       console.error('Hub connection is not established.');
     }

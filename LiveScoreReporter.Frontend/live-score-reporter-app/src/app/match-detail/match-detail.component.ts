@@ -30,34 +30,35 @@ export class MatchDetailComponent implements OnInit {
   ngOnInit(): void {
     this.gameId = Number(this.route.snapshot.paramMap.get('id'));
     this.signalRService.startConnection();
-    this.signalRService.addEventListener(this); // Przekaż komponent jako argument
+    this.signalRService.addEventListener(this); 
     this.refreshData(); // Początkowe załadowanie danych
   }
 
+  // Metoda wywoływana przez SignalR po otrzymaniu nowego zdarzenia
+  handleNewEvent(newEvent: MatchEvent): void {
+    this.refreshData(); // Odśwież wszystkie dane po otrzymaniu nowego zdarzenia
+  }
+
+  // Metoda do ponownego pobierania wszystkich danych
+  refreshData(): void {
+    console.log('Refreshing data...');
+    this.loadMatchDetails(); // Pobierz szczegóły meczu
+    this.loadEvents();       // Pobierz pełną listę wydarzeń z bazy danych
+  }
+
+  // Pobieranie szczegółów meczu
   loadMatchDetails(): void {
     this.matchService.getMatch(this.gameId).subscribe((match: Match) => {
       this.match = match;
     });
   }
 
+  // Pobieranie wszystkich wydarzeń
   loadEvents(): void {
     this.eventService.getEvents(this.gameId).subscribe((data: MatchEvent[]) => {
-      const newEvents = data.filter(event => !this.events.some(e => e.Time === event.Time && e.Details === event.Details));
-      this.events = [...this.events, ...newEvents];
+      this.events = data; // Zastąpienie starej listy nowymi danymi
     });
   }
-
-  handleNewEvent(newEvent: MatchEvent): void {
-    this.eventService.addNewEvent(newEvent);  // Dodanie nowego wydarzenia do serwisu
-    this.events.push(newEvent);  // Dodanie nowego wydarzenia do lokalnej listy komponentu
-    this.refreshData(); // Odśwież dane po dodaniu nowego wydarzenia
-  }
-
-  refreshData(): void {
-    this.loadMatchDetails();
-    this.loadEvents();
-  }
-
   
   getEventIcon(eventType: number) {
     switch (eventType) {
