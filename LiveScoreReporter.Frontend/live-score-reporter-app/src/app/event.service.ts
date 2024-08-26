@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-export interface MatchEvent {  // Zmieniona nazwa na MatchEvent
+export interface MatchEvent {  
   TeamId: number;
   TeamName: string;
   Type: number;
@@ -19,11 +19,11 @@ export interface MatchEvent {  // Zmieniona nazwa na MatchEvent
 })
 export class EventService {
   private baseUrl = 'http://localhost:5254/events';
-  private events: MatchEvent[] = [];  // Zmieniona nazwa na MatchEvent[]
+  private events: MatchEvent[] = []; 
 
   constructor(private http: HttpClient) { }
 
-  handleNewEvent(newEvent: MatchEvent): void {  // Zmieniona nazwa na MatchEvent
+  handleNewEvent(newEvent: MatchEvent): void {  
     this.events.push(newEvent);
   }
 
@@ -32,10 +32,10 @@ export class EventService {
   }
 
   addNewEvent(newEvent: MatchEvent): void {  
-    this.events.push(newEvent);  // Dodanie nowego wydarzenia do lokalnej listy
+    this.events.push(newEvent);  
   }
 
   getLocalEvents(): MatchEvent[] {
-    return this.events;  // Zwrócenie lokalnej listy wydarzeń
+    return this.events;  
   }
 }

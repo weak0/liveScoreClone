@@ -17,13 +17,13 @@ header {
   
   main {
     padding: 20px;
-    margin-bottom: 60px; /* Odstęp na stopkę */
+    margin-bottom: 60px; 
   }
   .clickable {
     cursor: pointer;
   }
   
   .clickable:hover {
-    color: #007bff; /* Kolor podczas najechania */
+    color: #007bff; 
   }
   

@@ -31,32 +31,32 @@ export class MatchDetailComponent implements OnInit {
     this.gameId = Number(this.route.snapshot.paramMap.get('id'));
     this.signalRService.startConnection();
     this.signalRService.addEventListener(this); 
-    this.refreshData(); // Początkowe załadowanie danych
+    this.refreshData(); 
   }
 
-  // Metoda wywoływana przez SignalR po otrzymaniu nowego zdarzenia
+  
   handleNewEvent(newEvent: MatchEvent): void {
-    this.refreshData(); // Odśwież wszystkie dane po otrzymaniu nowego zdarzenia
+    this.refreshData(); 
   }
 
-  // Metoda do ponownego pobierania wszystkich danych
+ 
   refreshData(): void {
     console.log('Refreshing data...');
-    this.loadMatchDetails(); // Pobierz szczegóły meczu
-    this.loadEvents();       // Pobierz pełną listę wydarzeń z bazy danych
+    this.loadMatchDetails(); 
+    this.loadEvents();      
   }
 
-  // Pobieranie szczegółów meczu
+ 
   loadMatchDetails(): void {
     this.matchService.getMatch(this.gameId).subscribe((match: Match) => {
       this.match = match;
     });
   }
 
-  // Pobieranie wszystkich wydarzeń
+ 
   loadEvents(): void {
     this.eventService.getEvents(this.gameId).subscribe((data: MatchEvent[]) => {
-      this.events = data; // Zastąpienie starej listy nowymi danymi
+      this.events = data; 
     });
   }
   

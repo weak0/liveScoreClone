@@ -1,26 +1,26 @@
 .match-detail {
     padding: 20px;
     max-width: 1000px;
-    margin: 0 auto; /* Centruje całą sekcję */
+    margin: 0 auto; 
   }
   
   .match-info {
     display: flex;
-    justify-content: space-between; /* Równe odstępy między drużynami a wynikiem */
+    justify-content: space-between; 
     align-items: center;
     margin-bottom: 20px;
-    padding-bottom: 20px; /* Dodajemy większy odstęp dolny */
+    padding-bottom: 20px; 
     border-bottom: 2px solid #ddd;
   }
   
   .team-info {
     display: flex;
-    flex-direction: column; /* Ustawia herb nad nazwą drużyny */
+    flex-direction: column; 
     align-items: center;
   }
   
   .team-info img {
-    width: 80px; /* Rozmiar herbu */
+    width: 80px; 
     height: 80px;
   }
   
@@ -31,7 +31,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px; /* Odstęp między wynikiem a nazwami drużyn */
+    gap: 10px; 
   }
   
   .match-result {
@@ -49,13 +49,13 @@
   .event {
     display: flex;
     align-items: center;
-    padding: 10px 0; /* Mniejszy odstęp między wydarzeniami */
+    padding: 10px 0; 
     border-bottom: 1px solid #ddd;
   }
   
   .event-icon {
     margin-right: 10px;
-    color: #555; /* Kolor ikony */
+    color: #555; 
     font-size: 1.5rem;
   }
   
@@ -65,8 +65,8 @@
   
   .event p {
     margin: 5px 0;
-    line-height: 1.5; /* Lepsza czytelność przez zwiększenie odstępów między liniami */
-    text-align: left; /* Wyjustowanie tekstu do lewej dla lepszej czytelności */
+    line-height: 1.5; 
+    text-align: left; 
   }
   
   

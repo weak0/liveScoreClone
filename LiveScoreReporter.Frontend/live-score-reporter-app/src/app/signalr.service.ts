@@ -29,7 +29,7 @@ export class SignalRService {
 
         if (Number(gameId) === component.gameId) {
           console.log('Processing event:', eventObj);
-          component.handleNewEvent(eventObj); // Wywołanie metody handleNewEvent w komponencie
+          component.handleNewEvent(eventObj); 
         }
       });
     } else {
