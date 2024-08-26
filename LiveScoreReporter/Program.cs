@@ -42,13 +42,13 @@ namespace LiveScoreReporter
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowSpecificOrigin", // tylko dla okreœlonego pochodzenia
+                options.AddPolicy("AllowSpecificOrigin", 
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:4200") // podaj dok³adny adres frontendu
+                        builder.WithOrigins("http://localhost:4200") 
                             .AllowAnyMethod()
                             .AllowAnyHeader()
-                            .AllowCredentials(); // pozwala na uwierzytelnianie
+                            .AllowCredentials();
                     });
             });
 

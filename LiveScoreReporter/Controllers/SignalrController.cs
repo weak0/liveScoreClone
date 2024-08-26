@@ -24,8 +24,7 @@ namespace LiveScoreReporter.Controllers
                 return BadRequest();
             }
 
-            // Zakładając, że Event zawiera pole gameId i eventData
-            string gameId = newEvent.GameId.ToString();  // Zakładam, że GameId jest liczbą
+            string gameId = newEvent.GameId.ToString();
             string eventData = Newtonsoft.Json.JsonConvert.SerializeObject(newEvent);
 
             await _hubContext.Clients.All.SendAsync("ReceiveEventUpdate", gameId, eventData);
