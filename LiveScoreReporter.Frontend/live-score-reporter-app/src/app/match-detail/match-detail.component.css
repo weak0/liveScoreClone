@@ -47,8 +47,20 @@
   }
   
   .event {
+    display: flex;
+    align-items: center;
     padding: 10px 0; /* Mniejszy odstęp między wydarzeniami */
     border-bottom: 1px solid #ddd;
+  }
+  
+  .event-icon {
+    margin-right: 10px;
+    color: #555; /* Kolor ikony */
+    font-size: 1.5rem;
+  }
+  
+  .event-details {
+    flex-grow: 1;
   }
   
   .event p {
@@ -56,4 +68,5 @@
     line-height: 1.5; /* Lepsza czytelność przez zwiększenie odstępów między liniami */
     text-align: left; /* Wyjustowanie tekstu do lewej dla lepszej czytelności */
   }
+  
   

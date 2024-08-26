@@ -20,10 +20,13 @@
     </div>
   
     <div class="events">
-      <div *ngFor="let event of events" class="event">
-        <p><strong>{{ event.Time }}'</strong> - {{ event.TeamName }} - {{ event.Details }}</p>
-        <p>Gracz: {{ event.PlayerName }} <span *ngIf="event.AssistPlayerName">, Asysta: {{ event.AssistPlayerName }}</span></p>
+        <div *ngFor="let event of events" class="event">
+          <fa-icon [icon]="getEventIcon(event.Type)" class="event-icon"></fa-icon>
+          <div class="event-details">
+            <p><strong>{{ event.Time }}'</strong> - {{ event.TeamName }} - {{ event.Details }}</p>
+            <p>Gracz: {{ event.PlayerName }} <span *ngIf="event.AssistPlayerName">, Asysta: {{ event.AssistPlayerName }}</span></p>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+      
   
