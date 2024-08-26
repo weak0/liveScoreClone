@@ -1,4 +1,5 @@
-﻿using LiveScoreReporter.EFCore.Infrastructure;
+﻿using LiveScoreReporter.Application.Services;
+using LiveScoreReporter.EFCore.Infrastructure;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -12,36 +13,24 @@ namespace LiveScoreReporter.Controllers
     [ApiController]
     public class FrontendController : ControllerBase
     {
-        private readonly IGenericRepository<Game> _gameRepository;
-        private readonly LiveScoreReporterDbContext _context;
+        private readonly IFrontendService _frontendService;
 
-        public FrontendController(IGenericRepository<Game> gameRepository, LiveScoreReporterDbContext context)
+        public FrontendController(IFrontendService frontendService)
         {
-            _gameRepository = gameRepository;
-            _context = context;
+            _frontendService = frontendService;
         }
 
         [HttpGet]
+        [Route("/games/all")]
         public async Task<IActionResult> GetAllGamesForLandingPageAsync()
         {
-            var gamesWithScoresAndTeams = _context.Games
-                .Include(g => g.Score)
-                .Include(g => g.AwayTeam)
-                .Include(g => g.HomeTeam);
+            var gamesWithScoresAndTeams = await _frontendService.GetGamesWithDetailsAsync();
 
-            var frontDto = gamesWithScoresAndTeams.Select(x => new
-            {
-                GameId = x.FixtureId,
-                HomeTeamName = x.HomeTeam.Name,
-                HomeTeamLogo = x.HomeTeam.Logo,
-                AwayTeamName = x.AwayTeam.Name,
-                AwayTeamLogo = x.AwayTeam.Logo,
-                GameResult = $"{x.Score.Home}:{x.Score.Away}"
-            }).ToList();
+            var gamesWithDetailsDtos =  _frontendService.MapGamesToDto(gamesWithScoresAndTeams);
 
-            var dtoInJson = JsonConvert.SerializeObject(frontDto);
+            var dtosSerializedToJson = _frontendService.SerializeGamesToJson(gamesWithDetailsDtos);
 
-            return Ok(dtoInJson);
+            return Ok(dtosSerializedToJson);
         }
     }
 }
