@@ -97,6 +97,26 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
             return await query.FirstOrDefaultAsync(predicate);
         }
 
+        public async Task<Game> GetGameWithScoreAndTeamsAsync(int fixtureId)
+        {
+            return await _context.Games
+                .AsNoTracking()
+                .Include(g => g.Score)
+                .Include(g => g.AwayTeam)
+                .Include(g => g.HomeTeam)
+                .FirstOrDefaultAsync(g => g.FixtureId == fixtureId);
+        }
+
+        public async Task<List<Game>> GetAllGamesWithScoreAndTeamsAsync()
+        {
+           return await _context.Games
+               .AsNoTracking()
+                .Include(g => g.Score)
+                .Include(g => g.AwayTeam)
+                .Include(g => g.HomeTeam)
+                .ToListAsync();
+        }
+
 
         private bool _disposed = false;
 
