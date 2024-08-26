@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
+namespace LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {

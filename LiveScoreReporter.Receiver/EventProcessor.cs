@@ -1,5 +1,4 @@
 ﻿using LiveScoreReporter.EFCore.Infrastructure.Entities;
-using LiveScoreReporter.EFCore.Infrastructure.Repositories;
 using LiveScoreReporter.Receiver.Application.Models;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Newtonsoft.Json;
@@ -10,16 +9,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using static System.Formats.Asn1.AsnWriter;
+using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
 
 namespace LiveScoreReporter.Receiver
 {
     public class EventProcessor : IEventProcessor
     {
-        private readonly IGenericRepository<Event> _eventRepository;
-        private readonly IGenericRepository<Score> _scoreRepository;
+        private readonly IEventRepository _eventRepository;
+        private readonly IScoreRepository _scoreRepository;
         private ILogger<EventProcessor> _logger;
 
-        public EventProcessor(IGenericRepository<Event> eventRepository, IGenericRepository<Score> scoreRepository, ILogger<EventProcessor> logger)
+        public EventProcessor(IEventRepository eventRepository, IScoreRepository scoreRepository, ILogger<EventProcessor> logger)
         {
             _eventRepository = eventRepository;
             _scoreRepository = scoreRepository;

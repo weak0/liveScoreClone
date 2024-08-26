@@ -5,11 +5,12 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
+using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
 {
-    public class GameRepository : IGenericRepository<Game>, IDisposable
+    public class GameRepository : IGameRepository, IDisposable
     {
         private readonly LiveScoreReporterDbContext _context;
         public GameRepository(LiveScoreReporterDbContext context)
@@ -94,6 +95,26 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
             }
 
             return await query.FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<Game> GetGameWithScoreAndTeamsAsync(int fixtureId)
+        {
+            return await _context.Games
+                .AsNoTracking()
+                .Include(g => g.Score)
+                .Include(g => g.AwayTeam)
+                .Include(g => g.HomeTeam)
+                .FirstOrDefaultAsync(g => g.FixtureId == fixtureId);
+        }
+
+        public async Task<List<Game>> GetAllGamesWithScoreAndTeamsAsync()
+        {
+           return await _context.Games
+               .AsNoTracking()
+                .Include(g => g.Score)
+                .Include(g => g.AwayTeam)
+                .Include(g => g.HomeTeam)
+                .ToListAsync();
         }
 
 

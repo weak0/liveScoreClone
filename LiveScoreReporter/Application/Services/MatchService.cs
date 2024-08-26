@@ -1,7 +1,7 @@
 ﻿using LiveScoreReporter.Application.Models;
 using LiveScoreReporter.Controllers;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
-using LiveScoreReporter.EFCore.Infrastructure.Repositories;
+using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
 using LiveScoreReporter.MockApiAssets;
 using Newtonsoft.Json;
 using RestSharp;
@@ -15,13 +15,13 @@ namespace LiveScoreReporter.Application.Services
     public class MatchService : IMatchService
     {
         private readonly RestClient _restClient;
-        private readonly IGenericRepository<Game> _gameRepository;
-        private readonly IGenericRepository<Team> _teamRepository;
-        private readonly IGenericRepository<Score> _scoreRepository;
-        private readonly IGenericRepository<Player> _playerRepository;
-        private readonly IGenericRepository<League> _leagueRepository;
+        private readonly IGameRepository _gameRepository;
+        private readonly ITeamRepository _teamRepository;
+        private readonly IScoreRepository _scoreRepository;
+        private readonly IPlayerRepository _playerRepository;
+        private readonly ILeagueRepository _leagueRepository;
 
-        public MatchService(IGenericRepository<Game> gamesRepository, IGenericRepository<Team> teamRepository, IGenericRepository<Score> scorerRepository, IGenericRepository<Player> playerRepository, IGenericRepository<League> leagueRepository)
+        public MatchService(IGameRepository gamesRepository, ITeamRepository teamRepository, IScoreRepository scorerRepository, IPlayerRepository playerRepository, ILeagueRepository leagueRepository)
         {
             _gameRepository = gamesRepository;
             _teamRepository = teamRepository;
