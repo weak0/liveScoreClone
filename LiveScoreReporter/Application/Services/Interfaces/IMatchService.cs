@@ -4,7 +4,7 @@ using LiveScoreReporter.Application.Models;
 using LiveScoreReporter.Controllers;
 using System.Threading.Tasks;
 
-namespace LiveScoreReporter.Application.Services
+namespace LiveScoreReporter.Application.Services.Interfaces
 {
     public interface IMatchService
     {
