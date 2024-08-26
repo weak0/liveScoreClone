@@ -1,0 +1,38 @@
+.match-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .match-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 300px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .match-card:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .team {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .team img {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .result {
+    font-weight: bold;
+  }
+  
