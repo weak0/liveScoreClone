@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using System.Runtime.InteropServices.JavaScript;
 using LiveScoreReporter.Sender.RabbitMq;
 using Newtonsoft.Json.Linq;
 using Quartz;
@@ -37,19 +34,15 @@ namespace LiveScoreReporter.Sender.Jobs
             if (response.IsSuccessful)
             {
                 var content = response.Content;
-
-                // Parsowanie JSON do obiektu JObject
+               
                 var json = JObject.Parse(content);
 
-                // Iterowanie po eventach w odpowiedzi
                 foreach (var eventItem in json["response"])
                 {
                     eventItem["fixtureId"] = fixtureId;
 
-                    // Konwertowanie pojedynczego eventu do JSON stringa
                     var eventJson = eventItem.ToString();
 
-                    // Publikowanie każdego eventu do kolejki
                     await _queueProducer.PublishAsync(eventJson);
 
                     _logger.LogInformation("Published event for fixture {fixtureId} to queue at {time}", fixtureId, DateTimeOffset.Now);
