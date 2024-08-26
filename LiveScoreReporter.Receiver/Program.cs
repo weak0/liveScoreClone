@@ -23,8 +23,8 @@ namespace LiveScoreReporter.Receiver
                     services.AddDbContext<LiveScoreReporterDbContext>(options =>
                         options.UseSqlServer(hostContext.Configuration.GetConnectionString("MatchDb")));
 
-                    services.AddScoped<IGenericRepository<Event>, EventRepository>();
-                    services.AddScoped<IGenericRepository<Score>, ScoreRepository>();
+                    services.AddScoped<IEventRepository, EventRepository>();
+                    services.AddScoped<IScoreRepository, ScoreRepository>();
                     services.AddScoped<IEventProcessor, EventProcessor>();
 
                     services.AddHostedService<ReceiverService>();

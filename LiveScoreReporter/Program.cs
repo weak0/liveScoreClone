@@ -27,12 +27,13 @@ namespace LiveScoreReporter
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IMatchService, MatchService>();
             builder.Services.AddScoped<IMockedDataService, MockedDataService>();
-            builder.Services.AddScoped<IGenericRepository<Game>, GameRepository>();
-            builder.Services.AddScoped<IGenericRepository<Team>, TeamRepository>();
-            builder.Services.AddScoped<IGenericRepository<Event>, EventRepository>();
-            builder.Services.AddScoped<IGenericRepository<Player>, PlayerRepository>();
-            builder.Services.AddScoped<IGenericRepository<Score>, ScoreRepository>();
-            builder.Services.AddScoped<IGenericRepository<League>, LeagueRepository>();
+            builder.Services.AddScoped<IGameRepository, GameRepository>();
+            builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+            builder.Services.AddScoped<IEventRepository, EventRepository>();
+            builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
+            builder.Services.AddScoped<IScoreRepository, ScoreRepository>();
+            builder.Services.AddScoped<ILeagueRepository, LeagueRepository>();
+            builder.Services.AddScoped<IFrontendService, FrontendService>();
 
             builder.Services
                 .AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly));

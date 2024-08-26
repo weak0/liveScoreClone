@@ -15,11 +15,11 @@ namespace LiveScoreReporter.Receiver
 {
     public class EventProcessor : IEventProcessor
     {
-        private readonly IGenericRepository<Event> _eventRepository;
-        private readonly IGenericRepository<Score> _scoreRepository;
+        private readonly IEventRepository _eventRepository;
+        private readonly IScoreRepository _scoreRepository;
         private ILogger<EventProcessor> _logger;
 
-        public EventProcessor(IGenericRepository<Event> eventRepository, IGenericRepository<Score> scoreRepository, ILogger<EventProcessor> logger)
+        public EventProcessor(IEventRepository eventRepository, IScoreRepository scoreRepository, ILogger<EventProcessor> logger)
         {
             _eventRepository = eventRepository;
             _scoreRepository = scoreRepository;
