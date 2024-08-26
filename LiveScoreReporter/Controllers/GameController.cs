@@ -34,5 +34,18 @@ namespace LiveScoreReporter.Controllers
             return Ok(dtosSerializedToJson);
         }
 
+        [HttpGet]
+        [Route("/games/{gameId}")]
+        public async Task<IActionResult> GetGameDetails([FromRoute] int gameId)
+        {
+            var gamesWithScoresAndTeams = await _gameService.GetSingleGameWithDetailsAsync(gameId);
+
+            var gamesWithDetailsDtos = _gameService.MapSingleGameToDto(gamesWithScoresAndTeams);
+
+            var dtosSerializedToJson = _gameService.SerializeSingleGameToJson(gamesWithDetailsDtos);
+
+            return Ok(dtosSerializedToJson);
+        }
+
     }
 }

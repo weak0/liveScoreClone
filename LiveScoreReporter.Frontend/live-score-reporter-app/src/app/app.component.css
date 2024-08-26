@@ -19,4 +19,11 @@ header {
     padding: 20px;
     margin-bottom: 60px; /* Odstęp na stopkę */
   }
+  .clickable {
+    cursor: pointer;
+  }
+  
+  .clickable:hover {
+    color: #007bff; /* Kolor podczas najechania */
+  }
   
