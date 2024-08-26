@@ -1,6 +1,4 @@
-﻿
-using System.Runtime.InteropServices.JavaScript;
-using LiveScoreReporter.Sender.RabbitMq;
+﻿using LiveScoreReporter.Sender.RabbitMq;
 using Newtonsoft.Json.Linq;
 using Quartz;
 using RestSharp;
