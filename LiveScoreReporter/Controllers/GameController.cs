@@ -1,4 +1,5 @@
-﻿using LiveScoreReporter.Application.Services;
+﻿using LiveScoreReporter.Application.Models.DTO;
+using LiveScoreReporter.Application.Services.Interfaces;
 using LiveScoreReporter.EFCore.Infrastructure;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
@@ -11,26 +12,27 @@ namespace LiveScoreReporter.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FrontendController : ControllerBase
+    public class GameController : ControllerBase
     {
-        private readonly IFrontendService _frontendService;
+        private readonly IGameService _gameService;
 
-        public FrontendController(IFrontendService frontendService)
+        public GameController(IGameService gameService)
         {
-            _frontendService = frontendService;
+            _gameService = gameService;
         }
 
         [HttpGet]
         [Route("/games/all")]
         public async Task<IActionResult> GetAllGamesForLandingPageAsync()
         {
-            var gamesWithScoresAndTeams = await _frontendService.GetGamesWithDetailsAsync();
+            var gamesWithScoresAndTeams = await _gameService.GetGamesWithDetailsAsync();
 
-            var gamesWithDetailsDtos =  _frontendService.MapGamesToDto(gamesWithScoresAndTeams);
+            var gamesWithDetailsDtos =  _gameService.MapGamesToDto(gamesWithScoresAndTeams);
 
-            var dtosSerializedToJson = _frontendService.SerializeGamesToJson(gamesWithDetailsDtos);
+            var dtosSerializedToJson = _gameService.SerializeGamesToJson(gamesWithDetailsDtos);
 
             return Ok(dtosSerializedToJson);
         }
+
     }
 }

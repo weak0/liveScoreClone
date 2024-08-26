@@ -1,17 +1,21 @@
 ﻿using LiveScoreReporter.Application.Models.DTO;
+using LiveScoreReporter.Application.Services.Interfaces;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
 using Newtonsoft.Json;
 
 namespace LiveScoreReporter.Application.Services
 {
-    public class FrontendService : IFrontendService
+    public class GameService : IGameService
     {
         private readonly IGameRepository _gameRepository;
+        private readonly ISerializerService _serializerService;
 
-        public FrontendService(IGameRepository gameRepository)
+
+        public GameService(IGameRepository gameRepository, ISerializerService serializerService)
         {
             _gameRepository = gameRepository;
+            _serializerService = serializerService;
         }
         public async Task<List<Game>> GetGamesWithDetailsAsync()
         {
@@ -32,7 +36,7 @@ namespace LiveScoreReporter.Application.Services
         }
         public string SerializeGamesToJson(List<GameWithDetailsDto> gamesWithDetailsDtos)
         {
-            return JsonConvert.SerializeObject(gamesWithDetailsDtos);
+            return _serializerService.SerializeObjectToJson(gamesWithDetailsDtos);
         }
     }
 }

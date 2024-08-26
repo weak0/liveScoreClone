@@ -1,4 +1,5 @@
 ﻿using LiveScoreReporter.Application.Models;
+using LiveScoreReporter.Application.Services.Interfaces;
 using LiveScoreReporter.Controllers;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;

@@ -97,6 +97,16 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
             return await query.FirstOrDefaultAsync(predicate);
         }
 
+        public async Task<List<Event>> GetAllEventsForGame(int gameId)
+        {
+            return await _context.Events
+                .AsNoTracking()
+                .Where(x => x.GameId == gameId)
+                .Include(e => e.Team)
+                .Include(e => e.Player)
+                .ToListAsync();
+        }
+
 
         private bool _disposed = false;
 

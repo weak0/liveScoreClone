@@ -1,4 +1,4 @@
-﻿using LiveScoreReporter.Application.Services;
+﻿using LiveScoreReporter.Application.Services.Interfaces;
 using LiveScoreReporter.MockApiAssets.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;

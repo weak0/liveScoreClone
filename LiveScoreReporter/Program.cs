@@ -1,5 +1,6 @@
 
 using LiveScoreReporter.Application.Services;
+using LiveScoreReporter.Application.Services.Interfaces;
 using LiveScoreReporter.EFCore.Infrastructure;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories;
@@ -33,7 +34,9 @@ namespace LiveScoreReporter
             builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
             builder.Services.AddScoped<IScoreRepository, ScoreRepository>();
             builder.Services.AddScoped<ILeagueRepository, LeagueRepository>();
-            builder.Services.AddScoped<IFrontendService, FrontendService>();
+            builder.Services.AddScoped<IGameService, GameService>();
+            builder.Services.AddScoped<IEventService, EventService>();
+            builder.Services.AddScoped<ISerializerService, SerializerService>();
 
             builder.Services.AddCors(options => 
             {
