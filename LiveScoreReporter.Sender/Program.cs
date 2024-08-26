@@ -15,14 +15,11 @@ namespace LiveScoreReporter.Sender
             var host = Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    // Rejestracja RestClient
                     services.AddSingleton<RestClient>(sp => new RestClient("https://v3.football.api-sports.io/"));
 
-                    // Rejestracja RabbitMQ
                     services.AddSingleton<IQueueProducer, RabbitMqProducer>();
                     services.Configure<RabbitMqSettings>(hostContext.Configuration.GetSection("RabbitMQ"));
 
-                    // Rejestracja Quartz i zadania
                     services.AddTransient<FetchEventsJob>();
 
                     services.AddQuartz(q =>
@@ -36,7 +33,7 @@ namespace LiveScoreReporter.Sender
                         q.AddTrigger(opts => opts
                             .ForJob(jobKey)
                             .WithIdentity("FetchEventsJob-trigger")
-                            .UsingJobData("fixtureId", 1202987)
+                            .UsingJobData("fixtureId", 1202998)
                             .WithSimpleSchedule(x => x
                                 .WithInterval(TimeSpan.FromMinutes(15))
                                 .RepeatForever()));
