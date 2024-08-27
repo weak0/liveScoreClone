@@ -37,7 +37,7 @@ namespace LiveScoreReporter.Application.Services
             try
             {
                 var request = new RestRequest($"fixtures?id={fixtureId}", Method.Get);
-                request.AddHeader("x-apisports-key", "fab0ac27356d28803f179b48d220d297");
+                request.AddHeader("x-apisports-key", "");
 
                 var response = await _restClient.ExecuteAsync(request);
 
