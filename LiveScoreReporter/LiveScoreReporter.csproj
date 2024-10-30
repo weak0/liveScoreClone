@@ -8,17 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Application\Commands\**" />
     <Compile Remove="Application\Queries\**" />
-    <Content Remove="Application\Commands\**" />
     <Content Remove="Application\Queries\**" />
-    <EmbeddedResource Remove="Application\Commands\**" />
     <EmbeddedResource Remove="Application\Queries\**" />
-    <None Remove="Application\Commands\**" />
     <None Remove="Application\Queries\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="MediatR.Extensions.FluentValidation.AspNetCore" Version="5.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="8.0.8" />
