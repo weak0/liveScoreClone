@@ -22,5 +22,5 @@ jobs:
           
       - name: Build and Push Image
         run: |
-          docker build -t y macciogo42/livescore2024:latest .
-          docker push y macciogo42/livescore2024:latest
+          docker build -t  macciogo42/livescore2024:latest .
+          docker push macciogo42/livescore2024:latest
