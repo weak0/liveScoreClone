@@ -11,6 +11,7 @@ using Team = LiveScoreReporter.EFCore.Infrastructure.Entities.Team;
 using ResponseLeague = LiveScoreReporter.Application.Models.League;
 using ResponseTeam = LiveScoreReporter.Application.Models.Teams;
 using ResponseLineup = LiveScoreReporter.Application.Models.Lineup;
+using ResponseScore = LiveScoreReporter.Application.Models.Score;
 
 
 namespace LiveScoreReporter.Application.Services
@@ -64,7 +65,7 @@ namespace LiveScoreReporter.Application.Services
             {
                 foreach (var response in obj.Response)
                 {
-                    var score = await GetOrAddScoreAsync(response.Fixture.Id);
+                    var score = await GetOrAddScoreAsync(response.Fixture.Id, response.Score);
 
                     await AddOrUpdateLeagueAsync(response.League);
                     await AddOrUpdateTeamsAsync(response.Teams);
@@ -122,7 +123,7 @@ namespace LiveScoreReporter.Application.Services
            
             return fixture;
         }
-        private async Task<Score> GetOrAddScoreAsync(int fixtureId)
+        private async Task<Score> GetOrAddScoreAsync(int fixtureId, ResponseScore obj)
         {
             var existingScore = _scoreRepository.Select(s => s.GameId == fixtureId);
           
@@ -132,9 +133,9 @@ namespace LiveScoreReporter.Application.Services
 
             var score = new Score
             {
-                Home = 0,
-                Away = 0,
-                Result = "",
+                Home = obj.Fulltime.Home.GetValueOrDefault(),
+                Away = obj.Fulltime.Away.GetValueOrDefault(),
+                Result = "" ,
                 GameId = fixtureId
             };
 
@@ -164,11 +165,10 @@ namespace LiveScoreReporter.Application.Services
         }
         private async Task AddOrUpdateTeamsAsync(ResponseTeam teams)
         {
-            
-
             await AddOrUpdateTeamAsync(teams.Home);
             await AddOrUpdateTeamAsync(teams.Away);
         }
+        
         private async Task AddOrUpdateTeamAsync(TeamBase teamData)
         {
             var existingTeam = await _teamRepository.SelectAsync(t => t.Id == teamData.Id);

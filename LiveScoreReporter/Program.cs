@@ -92,16 +92,6 @@ namespace LiveScoreReporter
             });
 
             var app = builder.Build();
-            
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI(options =>
-                {
-                    options.RoutePrefix = string.Empty;
-                });
-            }
-            
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -125,7 +115,10 @@ namespace LiveScoreReporter
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(options =>
+                {
+                    options.RoutePrefix = string.Empty;
+                });
             }
 
             app.UseHttpsRedirection();
