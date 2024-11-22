@@ -12,6 +12,7 @@
     <Content Remove="Application\Queries\**" />
     <EmbeddedResource Remove="Application\Queries\**" />
     <None Remove="Application\Queries\**" />
+    <None Include="Seeder\Data\Games.json" />
   </ItemGroup>
 
   <ItemGroup>

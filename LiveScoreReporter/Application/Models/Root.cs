@@ -377,7 +377,7 @@ namespace LiveScoreReporter.Application.Models
         public List<Event> Events { get; set; }
 
         [JsonProperty("lineups")]
-        public List<Lineup> Lineups { get; set; }
+        public List<Lineup>? Lineups { get; set; }
 
         [JsonProperty("statistics")]
         public List<Statistic> Statistics { get; set; }
@@ -577,6 +577,12 @@ namespace LiveScoreReporter.Application.Models
 
         [JsonProperty("city")]
         public string City { get; set; }
+    }
+    public class LineupResponse
+    {
+        public string Get { get; set; }
+        public Parameters Parameters { get; set; }
+        public List<Lineup> Response { get; set; }
     }
 
 

@@ -1,12 +1,5 @@
-﻿using LiveScoreReporter.Application.Models.DTO;
-using LiveScoreReporter.Application.Services.Interfaces;
-using LiveScoreReporter.EFCore.Infrastructure;
-using LiveScoreReporter.EFCore.Infrastructure.Entities;
-using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
-using Microsoft.AspNetCore.Http;
+﻿using LiveScoreReporter.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace LiveScoreReporter.Controllers
 {
@@ -20,7 +13,7 @@ namespace LiveScoreReporter.Controllers
         {
             _gameService = gameService;
         }
-
+        
         [HttpGet]
         [Route("/games/all")]
         public async Task<IActionResult> GetAllGamesForLandingPageAsync()

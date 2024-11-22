@@ -25,7 +25,7 @@ namespace LiveScoreReporter.Sender.Jobs
             _logger.LogInformation("Fetching events for fixture {fixtureId} at {time}", fixtureId, DateTimeOffset.Now);
 
             var request = new RestRequest($"fixtures/events?fixture={fixtureId}", Method.Get);
-            request.AddHeader("x-apisports-key", "fab0ac27356d28803f179b48d220d297");
+            request.AddHeader("x-apisports-key", "4038020fe2c0d80536856c4f340a1732");
 
             var response = await _client.ExecuteAsync(request);
 

@@ -1,15 +1,17 @@
 ﻿using LiveScoreReporter.Application.Models;
 using LiveScoreReporter.Application.Services.Interfaces;
-using LiveScoreReporter.Controllers;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
-using LiveScoreReporter.MockApiAssets;
 using Newtonsoft.Json;
 using RestSharp;
 using League = LiveScoreReporter.EFCore.Infrastructure.Entities.League;
 using Player = LiveScoreReporter.EFCore.Infrastructure.Entities.Player;
 using Score = LiveScoreReporter.EFCore.Infrastructure.Entities.Score;
 using Team = LiveScoreReporter.EFCore.Infrastructure.Entities.Team;
+using ResponseLeague = LiveScoreReporter.Application.Models.League;
+using ResponseTeam = LiveScoreReporter.Application.Models.Teams;
+using ResponseLineup = LiveScoreReporter.Application.Models.Lineup;
+
 
 namespace LiveScoreReporter.Application.Services
 {
@@ -36,8 +38,8 @@ namespace LiveScoreReporter.Application.Services
         {
             try
             {
-                var request = new RestRequest($"fixtures?id={fixtureId}", Method.Get);
-                request.AddHeader("x-apisports-key", "");
+                var request = new RestRequest($"fixtures?id={fixtureId}");
+                request.AddHeader("x-apisports-key", "4038020fe2c0d80536856c4f340a1732");
 
                 var response = await _restClient.ExecuteAsync(request);
 
@@ -57,33 +59,49 @@ namespace LiveScoreReporter.Application.Services
 
         public async Task<bool> AddDataToDb(Root obj)
         {
-            await using (var transaction = await _gameRepository.Context.Database.BeginTransactionAsync())
+            await using var transaction = await _gameRepository.Context.Database.BeginTransactionAsync();
+            try
             {
-                try
+                foreach (var response in obj.Response)
                 {
-                    var fixtureId = obj.Response.First().Fixture.Id;
+                    var score = await GetOrAddScoreAsync(response.Fixture.Id);
 
-                    var score = await GetOrAddScoreAsync(fixtureId);
+                    await AddOrUpdateLeagueAsync(response.League);
+                    await AddOrUpdateTeamsAsync(response.Teams);
+                    await AddOrUpdatePlayersAsync(response.Lineups);
 
-                    await AddOrUpdateLeagueAsync(obj);
-                    await AddOrUpdateTeamsAsync(obj);
-                    await AddOrUpdatePlayersAsync(obj);
-
-                    await GetOrAddFixtureAsync(fixtureId, score.Id, obj);
-
-                    await transaction.CommitAsync();
-                  
-                    return true;
+                    await GetOrAddFixtureAsync(response.Fixture.Id, score.Id, response);
                 }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
 
-                    return false;
-                }
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                // Optionally, log the exception here for debugging purposes
+                return false;
             }
         }
-        private async Task<Game> GetOrAddFixtureAsync(int fixtureId, int scoreId, Root obj)
+        public async Task AddOrUpdatePlayersAsync(IEnumerable<Lineup>? lineups)
+        {
+            if (lineups == null) return;
+            foreach (var lineup in lineups)
+            {
+                foreach (var startXi in lineup.StartXI)
+                {
+                    await AddOrUpdatePlayerAsync(startXi.Player);
+                }
+
+                foreach (var substitute in lineup.Substitutes)
+                {
+                    await AddOrUpdatePlayerAsync(substitute.Player);
+                }
+            }
+
+            await _playerRepository.SaveAsync();
+        }
+        private async Task<Game> GetOrAddFixtureAsync(int fixtureId, int scoreId, Response obj)
         {
             var existingFixture = await _gameRepository.SelectAsync(f => f.FixtureId == fixtureId);
             
@@ -93,9 +111,9 @@ namespace LiveScoreReporter.Application.Services
             var fixture = new Game
             {
                 FixtureId = fixtureId,
-                HomeTeamId = obj.Response.First().Teams.Home.Id,
-                AwayTeamId = obj.Response.First().Teams.Away.Id,
-                LeagueId = obj.Response.First().League.Id,
+                HomeTeamId = obj.Teams.Home.Id,
+                AwayTeamId = obj.Teams.Away.Id,
+                LeagueId = obj.League.Id,
                 ScoreId = scoreId
             };
 
@@ -125,9 +143,8 @@ namespace LiveScoreReporter.Application.Services
            
             return score;
         }
-        private async Task AddOrUpdateLeagueAsync(Root obj)
+        private async Task AddOrUpdateLeagueAsync(ResponseLeague leagueData)
         {
-            var leagueData = obj.Response.First().League;
             var existingLeague = await _leagueRepository.SelectAsync(l => l.Id == leagueData.Id);
             
             if (existingLeague != null) 
@@ -145,9 +162,9 @@ namespace LiveScoreReporter.Application.Services
             _leagueRepository.Add(league);
             await _leagueRepository.SaveAsync();
         }
-        private async Task AddOrUpdateTeamsAsync(Root obj)
+        private async Task AddOrUpdateTeamsAsync(ResponseTeam teams)
         {
-            var teams = obj.Response.First().Teams;
+            
 
             await AddOrUpdateTeamAsync(teams.Home);
             await AddOrUpdateTeamAsync(teams.Away);
@@ -168,25 +185,6 @@ namespace LiveScoreReporter.Application.Services
 
             _teamRepository.Add(team);
             await _teamRepository.SaveAsync();
-        }
-        private async Task AddOrUpdatePlayersAsync(Root obj)
-        {
-            var lineups = obj.Response.First().Lineups;
-
-            foreach (var lineup in lineups)
-            {
-                foreach (var startXi in lineup.StartXI)
-                {
-                    await AddOrUpdatePlayerAsync(startXi.Player);
-                }
-
-                foreach (var substitute in lineup.Substitutes)
-                {
-                    await AddOrUpdatePlayerAsync(substitute.Player);
-                }
-            }
-
-            await _playerRepository.SaveAsync();
         }
         private async Task AddOrUpdatePlayerAsync(Models.Player playerData)
         {

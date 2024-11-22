@@ -12,13 +12,14 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using FluentValidation;
+using LiveScoreReporter.Seeder;
 using MediatR.Extensions.FluentValidation.AspNetCore;
 
 namespace LiveScoreReporter
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +47,7 @@ namespace LiveScoreReporter
             builder.Services.AddScoped<IGameService, GameService>();
             builder.Services.AddScoped<IEventService, EventService>();
             builder.Services.AddScoped<ISerializerService, SerializerService>();
+            builder.Services.AddScoped<DbSeeder>();
 
             builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
@@ -90,6 +92,22 @@ namespace LiveScoreReporter
             });
 
             var app = builder.Build();
+            
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    // Run the seeder
+                    var seeder = services.GetRequiredService<DbSeeder>();
+                    await seeder.SeedAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred while seeding the database: {ex.Message}");
+                }
+            }
+            
             app.UseRouting();
             app.UseCors("AllowSpecificOrigin");
             

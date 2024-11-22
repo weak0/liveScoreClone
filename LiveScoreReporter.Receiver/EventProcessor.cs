@@ -109,7 +109,7 @@ namespace LiveScoreReporter.Receiver
 
 
             _scoreRepository.Update(scoreWithGame);
-            _scoreRepository.Save();
+            await _scoreRepository.SaveAsync();
         }
 
         private async Task SendEventToApi(Event newEvent)
