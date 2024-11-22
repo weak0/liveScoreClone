@@ -1,4 +1,5 @@
-﻿using LiveScoreReporter.Application.Services.Interfaces;
+﻿using LiveScoreReporter.Application.Models.DTO;
+using LiveScoreReporter.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LiveScoreReporter.Controllers
@@ -16,15 +17,13 @@ namespace LiveScoreReporter.Controllers
 
         [HttpGet]
         [Route("/events/{gameId}")]
-        public async Task<IActionResult> GetAllEventsForParticularGameAsync([FromRoute] int gameId)
+        public async Task<ActionResult<List<EventWithDetailsDto>>> GetAllEventsForParticularGameAsync([FromRoute] int gameId)
         {
             var eventsWithPlayersAndTeams = await _eventService.GetGameEventsWithDetailsAsync(gameId);
 
-            var eventsWithDetailsDtos = _eventService.MapEventsToDto(eventsWithPlayersAndTeams);
-
-            var dtosSerializedToJson = _eventService.SerializeEventsToJson(eventsWithDetailsDtos);
-
-            return Ok(dtosSerializedToJson);
+            var eventsWithDetailsDto = _eventService.MapEventsToDto(eventsWithPlayersAndTeams);
+            
+            return Ok(eventsWithDetailsDto);
         }
     }
 }

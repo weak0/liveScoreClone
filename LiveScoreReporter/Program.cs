@@ -1,11 +1,8 @@
-
 using LiveScoreReporter.Application.Services;
 using LiveScoreReporter.Application.Services.Interfaces;
 using LiveScoreReporter.EFCore.Infrastructure;
-using LiveScoreReporter.EFCore.Infrastructure.Entities;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
-using LiveScoreReporter.MockApiAssets.Services;
 using LiveScoreReporter.Shared.Hub;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -36,7 +33,6 @@ namespace LiveScoreReporter
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IMatchService, MatchService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IMockedDataService, MockedDataService>();
             builder.Services.AddScoped<IGameRepository, GameRepository>();
             builder.Services.AddScoped<ITeamRepository, TeamRepository>();
             builder.Services.AddScoped<IEventRepository, EventRepository>();
@@ -110,16 +106,12 @@ namespace LiveScoreReporter
             app.UseRouting();
             app.UseCors("AllowSpecificOrigin");
             
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
             {
-                app.UseSwagger();
-                app.UseSwaggerUI(options =>
-                {
-                    options.RoutePrefix = string.Empty;
-                });
-            }
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+                options.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
 

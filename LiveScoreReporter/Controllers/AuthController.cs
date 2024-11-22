@@ -24,7 +24,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("Register")]
-    public async Task<IActionResult> Register([FromBody] RegisterForm registerForm)
+    public async Task<ActionResult<bool>> Register([FromBody] RegisterForm registerForm)
     {
         if (!ModelState.IsValid)
         {
@@ -39,7 +39,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("Login")]
-    public async Task<IActionResult> Login([FromBody] LoginForm loginForm)
+    public async Task<ActionResult<bool>> Login([FromBody] LoginForm loginForm)
     {
         LoginCommand command = new(loginForm);
 
@@ -58,7 +58,7 @@ public class AuthController : ControllerBase
 
     [HttpGet("IsAuthenticated")]
     [Authorize]
-    public IActionResult IsAuthenticated()
+    public ActionResult IsAuthenticated()
     {
         if (User.Identity.IsAuthenticated) return Ok();
 
@@ -66,7 +66,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("Logout")]
-    public async Task<IActionResult> Logout()
+    public async Task<ActionResult> Logout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 

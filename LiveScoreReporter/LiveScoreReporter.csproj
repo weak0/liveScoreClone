@@ -39,4 +39,8 @@
     <ProjectReference Include="..\LiveScoreReporter.Shared\LiveScoreReporter.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="MockApiAssets\fixture_1202951.json" />
+  </ItemGroup>
+
 </Project>

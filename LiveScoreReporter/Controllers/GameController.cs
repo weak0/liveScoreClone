@@ -1,4 +1,5 @@
-﻿using LiveScoreReporter.Application.Services.Interfaces;
+﻿using LiveScoreReporter.Application.Models.DTO;
+using LiveScoreReporter.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LiveScoreReporter.Controllers
@@ -15,29 +16,24 @@ namespace LiveScoreReporter.Controllers
         }
         
         [HttpGet]
-        [Route("/games/all")]
-        public async Task<IActionResult> GetAllGamesForLandingPageAsync()
+        [Route("/games")]
+        public async Task<ActionResult<List<GameWithDetailsDto>>> GetAllGamesForLandingPageAsync()
         {
             var gamesWithScoresAndTeams = await _gameService.GetGamesWithDetailsAsync();
 
-            var gamesWithDetailsDtos =  _gameService.MapGamesToDto(gamesWithScoresAndTeams);
-
-            var dtosSerializedToJson = _gameService.SerializeGamesToJson(gamesWithDetailsDtos);
-
-            return Ok(dtosSerializedToJson);
+            var gamesWithDetailsDto =  _gameService.MapGamesToDto(gamesWithScoresAndTeams);
+            return Ok(gamesWithDetailsDto);
         }
 
         [HttpGet]
         [Route("/games/{gameId}")]
-        public async Task<IActionResult> GetGameDetails([FromRoute] int gameId)
+        public async Task<ActionResult<GameWithDetailsDto>> GetGameDetails([FromRoute] int gameId)
         {
             var gamesWithScoresAndTeams = await _gameService.GetSingleGameWithDetailsAsync(gameId);
 
-            var gamesWithDetailsDtos = _gameService.MapSingleGameToDto(gamesWithScoresAndTeams);
+            var gamesWithDetailsDto = _gameService.MapSingleGameToDto(gamesWithScoresAndTeams);
 
-            var dtosSerializedToJson = _gameService.SerializeSingleGameToJson(gamesWithDetailsDtos);
-
-            return Ok(dtosSerializedToJson);
+            return Ok(gamesWithDetailsDto);
         }
 
     }
