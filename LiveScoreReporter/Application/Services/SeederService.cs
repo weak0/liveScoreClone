@@ -16,7 +16,7 @@ using ResponseScore = LiveScoreReporter.Application.Models.Score;
 
 namespace LiveScoreReporter.Application.Services
 {
-    public class MatchService : IMatchService
+    public class SeederService : IMatchService
     {
         private readonly RestClient _restClient;
         private readonly IGameRepository _gameRepository;
@@ -25,7 +25,7 @@ namespace LiveScoreReporter.Application.Services
         private readonly IPlayerRepository _playerRepository;
         private readonly ILeagueRepository _leagueRepository;
 
-        public MatchService(IGameRepository gamesRepository, ITeamRepository teamRepository, IScoreRepository scorerRepository, IPlayerRepository playerRepository, ILeagueRepository leagueRepository)
+        public SeederService(IGameRepository gamesRepository, ITeamRepository teamRepository, IScoreRepository scorerRepository, IPlayerRepository playerRepository, ILeagueRepository leagueRepository)
         {
             _gameRepository = gamesRepository;
             _teamRepository = teamRepository;

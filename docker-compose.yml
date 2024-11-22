@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: maciogo42/livescore2024:latest
     ports:
       - "5000:8080" 
     environment:

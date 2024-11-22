@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>false</InvariantGlobalization>
   </PropertyGroup>
@@ -12,7 +12,6 @@
     <Content Remove="Application\Queries\**" />
     <EmbeddedResource Remove="Application\Queries\**" />
     <None Remove="Application\Queries\**" />
-    <None Include="Seeder\Data\Games.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,5 +41,6 @@
   <ItemGroup>
     <_ContentIncludedByDefault Remove="MockApiAssets\fixture_1202951.json" />
   </ItemGroup>
+
 
 </Project>
