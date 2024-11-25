@@ -1,3 +1,4 @@
+using System.Net;
 using LiveScoreReporter.Shared.Hub;
 using MediatR;
 using System.Reflection;
@@ -26,7 +27,7 @@ namespace LiveScoreReporter
             {
                 options.AddPolicy("AllowMaciekTest", builder =>
                 {
-                    builder.WithOrigins("http://localhost:5173")
+                    builder.WithOrigins("http://localhost:5173", "http://localhost:5000", "http://loscalhost:4200")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials();
