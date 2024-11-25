@@ -21,6 +21,18 @@ namespace LiveScoreReporter
             builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             builder.Services.AddPolicy();
+            
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin() 
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
+            });
+
 
             var app = builder.Build();
             

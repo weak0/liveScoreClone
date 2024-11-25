@@ -49,18 +49,7 @@ public static class ServiceCollectionExtension
 
     public static IServiceCollection AddPolicy(this IServiceCollection services)
     {
-        services.AddCors(options =>
-        {
-            options.AddPolicy("AllowSpecificOrigin", 
-                builder =>
-                {
-                    builder.WithOrigins("http://localhost:4200") 
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials();
-                });
-        });
-
+        
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
         {
             options.Cookie.HttpOnly = true;
