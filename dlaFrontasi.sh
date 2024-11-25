@@ -8,10 +8,18 @@ print_message() {
     echo -e "${color}\033[1m$(echo $message | tr '[:lower:]' '[:upper:]')${RESET}"
 }
 
-# Step 1: Create a custom Docker network (optional but recommended)
+# Step 1: Stop existing Docker containers (optional cleanup)
+echo "stopping existing docker containers"
+docker stop api-container
+docker stop baza_danych
+docker rm api-container
+docker rm baza_danych
+
+
+# Step 2: Create a custom Docker network (optional but recommended)
 docker network create my-network
 
-# Step 2: Run SQL Server container
+# Step 3: Run SQL Server container
 echo "Starting SQL Server container..."
 docker run -d \
   --network my-network \

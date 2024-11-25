@@ -24,13 +24,13 @@ namespace LiveScoreReporter
             
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowSpecificOrigin",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin() 
-                            .AllowAnyMethod()
-                            .AllowAnyHeader();
-                    });
+                options.AddPolicy("AllowMaciekTest", builder =>
+                {
+                    builder.WithOrigins("http://localhost:5173")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
             });
 
 
@@ -44,6 +44,7 @@ namespace LiveScoreReporter
 
             app.UseRouting();
             app.UseCors("AllowSpecificOrigin");
+            app.UseCors("AllowMaciekTest");
             app.UseSwagger();
             
             app.UseSwaggerUI(options =>
