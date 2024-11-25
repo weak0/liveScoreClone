@@ -2,28 +2,26 @@
 using LiveScoreReporter.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LiveScoreReporter.Controllers
+namespace LiveScoreReporter.Controllers;
+
+[ApiController]
+public class EventController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class EventController : ControllerBase
+    private readonly IEventService _eventService;
+
+    public EventController(IEventService eventService)
     {
-        private readonly IEventService _eventService;
+        _eventService = eventService;
+    }
 
-        public EventController(IEventService eventService)
-        {
-            _eventService = eventService;
-        }
+    [HttpGet]
+    [Route("/events/{gameId}")]
+    public async Task<ActionResult<List<EventWithDetailsDto>>> GetAllEventsForParticularGameAsync([FromRoute] int gameId)
+    {
+        var eventsWithPlayersAndTeams = await _eventService.GetGameEventsWithDetailsAsync(gameId);
 
-        [HttpGet]
-        [Route("/events/{gameId}")]
-        public async Task<ActionResult<List<EventWithDetailsDto>>> GetAllEventsForParticularGameAsync([FromRoute] int gameId)
-        {
-            var eventsWithPlayersAndTeams = await _eventService.GetGameEventsWithDetailsAsync(gameId);
-
-            var eventsWithDetailsDto = _eventService.MapEventsToDto(eventsWithPlayersAndTeams);
+        var eventsWithDetailsDto = _eventService.MapEventsToDto(eventsWithPlayersAndTeams);
             
-            return Ok(eventsWithDetailsDto);
-        }
+        return Ok(eventsWithDetailsDto);
     }
 }

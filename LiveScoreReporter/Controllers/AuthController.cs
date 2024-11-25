@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace LiveScoreReporter.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
@@ -23,7 +22,7 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
-    [HttpPost("Register")]
+    [HttpPost("/auth/register")]
     public async Task<ActionResult<bool>> Register([FromBody] RegisterForm registerForm)
     {
         if (!ModelState.IsValid)
@@ -38,7 +37,7 @@ public class AuthController : ControllerBase
         return result ? Ok(true) : BadRequest(new { StatusCode = 500, Message = "Registration failed" });
     }
 
-    [HttpPost("Login")]
+    [HttpPost("auth/login")]
     public async Task<ActionResult<bool>> Login([FromBody] LoginForm loginForm)
     {
         LoginCommand command = new(loginForm);
@@ -56,7 +55,7 @@ public class AuthController : ControllerBase
         return BadRequest();
     }
 
-    [HttpGet("IsAuthenticated")]
+    [HttpGet("auth/isAuthenticated")]
     [Authorize]
     public ActionResult IsAuthenticated()
     {
@@ -65,7 +64,7 @@ public class AuthController : ControllerBase
         throw new ApplicationException("Unauthorized");
     }
 
-    [HttpPost("Logout")]
+    [HttpPost("auth/logout")]
     public async Task<ActionResult> Logout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

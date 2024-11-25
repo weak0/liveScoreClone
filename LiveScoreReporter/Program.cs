@@ -56,12 +56,8 @@ namespace LiveScoreReporter
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
             
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapHub<MatchHub>("/matchHub");
-                endpoints.MapControllers();
-            });
 
             app.Run();
         }
