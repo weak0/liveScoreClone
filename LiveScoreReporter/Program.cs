@@ -42,9 +42,8 @@ namespace LiveScoreReporter
             var seeder = services.GetRequiredService<DbSeeder>();
             await seeder.SeedAsync();
 
-            app.UseRouting();
-            app.UseCors("AllowSpecificOrigin");
             app.UseCors("AllowMaciekTest");
+            app.UseRouting();
             app.UseSwagger();
             
             app.UseSwaggerUI(options =>
