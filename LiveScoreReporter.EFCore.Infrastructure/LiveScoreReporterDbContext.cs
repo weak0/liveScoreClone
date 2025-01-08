@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LiveScoreReporter.EFCore.Infrastructure.Entities;
+﻿using LiveScoreReporter.EFCore.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace LiveScoreReporter.EFCore.Infrastructure
@@ -22,6 +17,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure
         public DbSet<Team> Teams { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<User> Users{ get; set; }
+        public DbSet<Lineup> Lineups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -95,7 +91,23 @@ namespace LiveScoreReporter.EFCore.Infrastructure
                 .HasOne(s => s.Game)
                 .WithOne(g => g.Score)
                 .HasForeignKey<Game>(g => g.ScoreId);
+            
+           
+            modelBuilder.Entity<Lineup>()
+                .HasOne(l => l.Game)             
+                .WithMany(g => g.Lineups)        
+                .HasForeignKey(l => l.GameId);   
 
+            
+            modelBuilder.Entity<Lineup>()
+                .HasMany(l => l.Players)         
+                .WithMany(p => p.Lineups)        
+                .UsingEntity(j => j.ToTable("LineupPlayers"));
+            modelBuilder.Entity<Lineup>()
+                .HasOne(l => l.Team)
+                .WithMany(t => t.Lineups)
+                .HasForeignKey(l => l.TeamId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder);
         }

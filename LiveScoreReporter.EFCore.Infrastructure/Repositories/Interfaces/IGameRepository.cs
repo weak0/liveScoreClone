@@ -9,7 +9,8 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces
 {
     public interface IGameRepository : IGenericRepository<Game>
     {
-        Task<Game> GetGameWithScoreAndTeamsAsync(int fixtureId);
+        Task<Game?> GetGameWithScoreAndTeamsAsync(int fixtureId);
         Task<List<Game>> GetAllGamesWithScoreAndTeamsAsync();
+        Task<List<Lineup>> GetGameLineupAsync(int gameId);
     }
 }

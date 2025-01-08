@@ -1,16 +1,20 @@
-﻿using LiveScoreReporter.Application.Models.DTO;
+﻿using LiveScoreReporter.Application.Models;
+using LiveScoreReporter.Application.Models.DTO;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
+using Lineup = LiveScoreReporter.EFCore.Infrastructure.Entities.Lineup;
 
 namespace LiveScoreReporter.Application.Services.Interfaces
 {
     public interface IGameService
     {
         Task<Game> GetSingleGameWithDetailsAsync(int gameId);
-        GameWithDetailsDto MapSingleGameToDto(Game gamesWithDetails);
-        string SerializeSingleGameToJson(GameWithDetailsDto gameWithDetailsDtos);
+        GameDto MapSingleGameToDto(Game gamesWithDetails);
+        string SerializeSingleGameToJson(GameDto gameDtos);
 
         Task<List<Game>> GetGamesWithDetailsAsync();
-        List<GameWithDetailsDto> MapGamesToDto(List<Game> gamesWithDetails);
-        string SerializeGamesToJson(List<GameWithDetailsDto> gamesWithDetailsDtos);
+        List<GameDto> MapGamesToDto(List<Game> gamesWithDetails);
+        string SerializeGamesToJson(List<GameDto> gamesWithDetailsDtos);
+        Task<List<Lineup>> GetGameLineupAsync(int gameId);
+        public GameDetailsDto MapToGameDetailsDto(Game game, Lineup homeTeamLineup, Lineup awayTeamLineup);
     }
 }

@@ -22,6 +22,21 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("LineupPlayer", b =>
+                {
+                    b.Property<int>("LineupsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlayersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("LineupsId", "PlayersId");
+
+                    b.HasIndex("PlayersId");
+
+                    b.ToTable("LineupPlayers", (string)null);
+                });
+
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.Event", b =>
                 {
                     b.Property<int>("Id")
@@ -123,6 +138,29 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
                     b.ToTable("Leagues");
                 });
 
+            modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.Lineup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeamId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("Lineups");
+                });
+
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.Player", b =>
                 {
                     b.Property<int?>("Id")
@@ -203,6 +241,21 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("LineupPlayer", b =>
+                {
+                    b.HasOne("LiveScoreReporter.EFCore.Infrastructure.Entities.Lineup", null)
+                        .WithMany()
+                        .HasForeignKey("LineupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LiveScoreReporter.EFCore.Infrastructure.Entities.Player", null)
+                        .WithMany()
+                        .HasForeignKey("PlayersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.Event", b =>
                 {
                     b.HasOne("LiveScoreReporter.EFCore.Infrastructure.Entities.Player", "AssistPlayer")
@@ -269,9 +322,30 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
                     b.Navigation("Score");
                 });
 
+            modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.Lineup", b =>
+                {
+                    b.HasOne("LiveScoreReporter.EFCore.Infrastructure.Entities.Game", "Game")
+                        .WithMany("Lineups")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LiveScoreReporter.EFCore.Infrastructure.Entities.Team", "Team")
+                        .WithMany("Lineups")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+
+                    b.Navigation("Team");
+                });
+
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.Game", b =>
                 {
                     b.Navigation("Events");
+
+                    b.Navigation("Lineups");
                 });
 
             modelBuilder.Entity("LiveScoreReporter.EFCore.Infrastructure.Entities.League", b =>
@@ -299,6 +373,8 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
                     b.Navigation("Events");
 
                     b.Navigation("HomeGames");
+
+                    b.Navigation("Lineups");
                 });
 #pragma warning restore 612, 618
         }

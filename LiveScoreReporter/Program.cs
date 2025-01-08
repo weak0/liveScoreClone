@@ -3,9 +3,11 @@ using LiveScoreReporter.Shared.Hub;
 using MediatR;
 using System.Reflection;
 using FluentValidation;
+using LiveScoreReporter.EFCore.Infrastructure;
 using LiveScoreReporter.Infrastucture;
 using LiveScoreReporter.Seeder;
 using MediatR.Extensions.FluentValidation.AspNetCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace LiveScoreReporter
 {
@@ -17,7 +19,8 @@ namespace LiveScoreReporter
 
             var connectionString = builder.Configuration.GetConnectionString("MatchDb");
       
-            builder.Services.AddInfrastructure(connectionString!);
+            builder.Services.AddDbContext<LiveScoreReporterDbContext>(options => options.UseSqlServer(connectionString));
+            builder.Services.AddInfrastructure();
             builder.Services.AddServices();
             builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));

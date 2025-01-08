@@ -16,5 +16,6 @@
         public League League { get; set; }
 
         public ICollection<Event> Events { get; set; }
+        public ICollection<Lineup> Lineups { get; set; } 
     }
 }

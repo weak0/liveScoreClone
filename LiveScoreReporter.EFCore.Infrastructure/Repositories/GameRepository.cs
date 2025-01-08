@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -20,12 +15,12 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
 
         public DbContext Context => _context;
 
-        public IEnumerable<Game> GetAll()
+        public IEnumerable<Game?> GetAll()
         {
            return _context.Games.ToList();
         }
 
-        public Task<List<Game>> GetAllAsync()
+        public Task<List<Game?>> GetAllAsync()
         {
             return _context.Games.ToListAsync();
         }
@@ -97,7 +92,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
             return await query.FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<Game> GetGameWithScoreAndTeamsAsync(int fixtureId)
+        public async Task<Game?> GetGameWithScoreAndTeamsAsync(int fixtureId)
         {
             return await _context.Games
                 .AsNoTracking()
@@ -116,6 +111,16 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
                 .Include(g => g.HomeTeam)
                 .ToListAsync();
         }
+
+        public async Task<List<Lineup>> GetGameLineupAsync(int gameId)
+        {
+            return await _context.Lineups
+                .AsNoTracking()
+                .Include(l => l.Players)
+                .Where(l => l.GameId == gameId)
+                .ToListAsync(); // Use ToListAsync for async EF queries
+        }
+
 
 
         private bool _disposed = false;

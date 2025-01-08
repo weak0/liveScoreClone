@@ -24,6 +24,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IScoreRepository, ScoreRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ILeagueRepository, LeagueRepository>();
+        services.AddScoped<ILineupRepository, LineupRepository>();
         services.AddScoped<IGameService, GameService>();
         services.AddScoped<IEventService, EventService>();
         services.AddScoped<ISerializerService, SerializerService>();
@@ -31,9 +32,9 @@ public static class ServiceCollectionExtension
         return services;
     }
     
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
-        services.AddDbContext<LiveScoreReporterDbContext>(options => options.UseSqlServer(connectionString));
+   
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSignalR();

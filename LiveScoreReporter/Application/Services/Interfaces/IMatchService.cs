@@ -10,6 +10,7 @@ namespace LiveScoreReporter.Application.Services.Interfaces
     {
         Task<Root> GetMatchDetailsAsync(int fixtureId);
         Task<bool> AddDataToDb(Root obj);
+        Task SeedGameLineupAsync(int fixtureId);
         Task AddOrUpdatePlayersAsync(IEnumerable<Lineup>? lineups);
 
     }

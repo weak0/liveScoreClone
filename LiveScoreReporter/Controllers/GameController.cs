@@ -16,7 +16,7 @@ public class GameController : ControllerBase
         
     [HttpGet]
     [Route("/games")]
-    public async Task<ActionResult<List<GameWithDetailsDto>>> GetAllGamesForLandingPageAsync()
+    public async Task<ActionResult<List<GameDto>>> GetAllGamesForLandingPageAsync()
     {
         var gamesWithScoresAndTeams = await _gameService.GetGamesWithDetailsAsync();
 
@@ -26,11 +26,13 @@ public class GameController : ControllerBase
 
     [HttpGet]
     [Route("/games/{gameId}")]
-    public async Task<ActionResult<GameWithDetailsDto>> GetGameDetails([FromRoute] int gameId)
+    public async Task<ActionResult<GameDto>> GetGameDetails([FromRoute] int gameId)
     {
         var gamesWithScoresAndTeams = await _gameService.GetSingleGameWithDetailsAsync(gameId);
+        
+        var getGameLineup = await _gameService.GetGameLineupAsync(gameId);
 
-        var gamesWithDetailsDto = _gameService.MapSingleGameToDto(gamesWithScoresAndTeams);
+        var gamesWithDetailsDto = _gameService.MapToGameDetailsDto(gamesWithScoresAndTeams, getGameLineup[0], getGameLineup[1]);
 
         return Ok(gamesWithDetailsDto);
     }

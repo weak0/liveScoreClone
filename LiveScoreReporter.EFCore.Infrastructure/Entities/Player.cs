@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace LiveScoreReporter.EFCore.Infrastructure.Entities
 {
     public class Player
@@ -14,5 +9,6 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Entities
 
         public ICollection<Event> Events { get; set; }
         public ICollection<Event> AssistedEvents { get; set; }
+        public ICollection<Lineup> Lineups { get; set; }
     }
 }

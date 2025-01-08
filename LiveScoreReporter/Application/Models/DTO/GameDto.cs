@@ -1,6 +1,6 @@
 ﻿namespace LiveScoreReporter.Application.Models.DTO
 {
-    public record GameWithDetailsDto
+    public record GameDto
     {
         public int GameId { get; set; }
         public string HomeTeamName { get; set; }

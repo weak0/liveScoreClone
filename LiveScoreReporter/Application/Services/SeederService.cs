@@ -1,10 +1,13 @@
 ﻿using LiveScoreReporter.Application.Models;
 using LiveScoreReporter.Application.Services.Interfaces;
+using LiveScoreReporter.EFCore.Infrastructure;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
+using LiveScoreReporter.EFCore.Infrastructure.Repositories;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
 using Newtonsoft.Json;
 using RestSharp;
 using League = LiveScoreReporter.EFCore.Infrastructure.Entities.League;
+using Lineup = LiveScoreReporter.EFCore.Infrastructure.Entities.Lineup;
 using Player = LiveScoreReporter.EFCore.Infrastructure.Entities.Player;
 using Score = LiveScoreReporter.EFCore.Infrastructure.Entities.Score;
 using Team = LiveScoreReporter.EFCore.Infrastructure.Entities.Team;
@@ -24,14 +27,23 @@ namespace LiveScoreReporter.Application.Services
         private readonly IScoreRepository _scoreRepository;
         private readonly IPlayerRepository _playerRepository;
         private readonly ILeagueRepository _leagueRepository;
+        private readonly ILineupRepository _lineupRepository;
+        private readonly LiveScoreReporterDbContext _context;
 
-        public SeederService(IGameRepository gamesRepository, ITeamRepository teamRepository, IScoreRepository scorerRepository, IPlayerRepository playerRepository, ILeagueRepository leagueRepository)
+        public SeederService(IGameRepository gamesRepository, 
+            ITeamRepository teamRepository, 
+            IScoreRepository scorerRepository, 
+            IPlayerRepository playerRepository, 
+            ILeagueRepository leagueRepository, 
+            ILineupRepository lineupRepository, LiveScoreReporterDbContext context)
         {
             _gameRepository = gamesRepository;
             _teamRepository = teamRepository;
             _scoreRepository = scorerRepository;
             _playerRepository = playerRepository;
             _leagueRepository = leagueRepository;
+            _lineupRepository = lineupRepository;
+            _context = context;
             _restClient = new RestClient("https://v3.football.api-sports.io/");
         }
 
@@ -84,7 +96,60 @@ namespace LiveScoreReporter.Application.Services
                 return false;
             }
         }
-        public async Task AddOrUpdatePlayersAsync(IEnumerable<Lineup>? lineups)
+
+        public async Task SeedGameLineupAsync(int fixtureId)
+        {
+            try
+            {
+                var request = new RestRequest($"fixtures/lineups?fixture={fixtureId}");
+                request.AddHeader("x-apisports-key", "4038020fe2c0d80536856c4f340a1732");
+
+                var response = await _restClient.ExecuteAsync(request);
+                
+                if (!response.IsSuccessful)
+                    throw new HttpRequestException($"Request failed with status code {response.StatusCode}: {response.Content}");
+
+                var deserializedLineups = JsonConvert.DeserializeObject<LineupResponse>(response.Content);
+                
+                await AddOrUpdatePlayersAsync(deserializedLineups.Response);
+                
+                var homePlayers = deserializedLineups.Response[0].StartXI
+                    .Select(p => _context.Players.Local.FirstOrDefault(pl => pl.Id == p.Player.Id)
+                                 ?? _context.Players.Find(p.Player.Id)
+                                 ?? new Player { Id = p.Player.Id })
+                    .ToList();
+
+                var awayPlayers = deserializedLineups.Response[1].StartXI
+                    .Select(p => _context.Players.Local.FirstOrDefault(pl => pl.Id == p.Player.Id)
+                                 ?? _context.Players.Find(p.Player.Id)
+                                 ?? new Player { Id = p.Player.Id })
+                    .ToList();
+                
+                var homeTeamLineUp = new Lineup
+                {
+                    GameId = fixtureId,
+                    TeamId = deserializedLineups.Response[0].Team.Id,
+                    Players = homePlayers
+                };
+
+                var awayTeamLineup = new Lineup
+                {
+                    GameId = fixtureId,
+                    TeamId = deserializedLineups.Response[1].Team.Id,
+                    Players = awayPlayers
+                };
+
+                await _lineupRepository.AddOrUpdateLineupAsync(homeTeamLineUp);
+                await _lineupRepository.AddOrUpdateLineupAsync(awayTeamLineup);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public async Task AddOrUpdatePlayersAsync(IEnumerable<ResponseLineup>? lineups)
         {
             if (lineups == null) return;
             foreach (var lineup in lineups)
