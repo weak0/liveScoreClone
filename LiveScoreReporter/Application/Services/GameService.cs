@@ -58,8 +58,8 @@ namespace LiveScoreReporter.Application.Services
                 HomeTeamLogo = game.HomeTeam.Logo,
                 AwayTeamName = game.AwayTeam.Name,
                 AwayTeamLogo = game.AwayTeam.Logo,
-                HomeTeamLineup = homeTeamLineup.Players.Select(p => p.Name).ToList(),
-                AwayTeamLineup = awayTeamLineup.Players.Select(p => p.Name).ToList(),
+                HomeTeamLineup = homeTeamLineup.Players.Select(p => new PlayerDto(p.Id, p.Name, p.Postition) ).ToList(),
+                AwayTeamLineup = awayTeamLineup.Players.Select(p => new PlayerDto(p.Id, p.Name, p.Postition)).ToList(),
                 Events = gameEvents.Select( e => new EventWithDetailsDto
                 {
                     TeamId = e.TeamId,

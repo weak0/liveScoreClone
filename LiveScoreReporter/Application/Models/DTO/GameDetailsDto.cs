@@ -7,8 +7,8 @@ public class GameDetailsDto
     public string HomeTeamLogo { get; set; }
     public string AwayTeamName { get; set; }
     public string AwayTeamLogo { get; set; }
-    public ICollection<string> HomeTeamLineup { get; set; }
-    public ICollection<string> AwayTeamLineup { get; set; }
+    public ICollection<PlayerDto> HomeTeamLineup { get; set; }
+    public ICollection<PlayerDto> AwayTeamLineup { get; set; }
     public ICollection<EventWithDetailsDto> Events { get; set; }
     public string GameResult { get; set; }
 }

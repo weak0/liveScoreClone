@@ -125,7 +125,7 @@ namespace LiveScoreReporter.Application.Services
                 var awayPlayers = deserializedLineups.Response[1].StartXI
                     .Select(p => _context.Players.Local.FirstOrDefault(pl => pl.Id == p.Player.Id)
                                  ?? _context.Players.Find(p.Player.Id)
-                                 ?? new Entities.Player { Id = p.Player.Id })
+                                 ?? new Entities.Player { Id = p.Player.Id  })
                     .ToList();
                 
                 var homeTeamLineUp = new Entities.Lineup
@@ -307,7 +307,8 @@ namespace LiveScoreReporter.Application.Services
             var player = new Entities.Player
             {
                 Id = playerData.Id,
-                Name = playerData.Name
+                Name = playerData.Name,
+                Postition = playerData.Pos,
             };
 
             _playerRepository.Add(player);
