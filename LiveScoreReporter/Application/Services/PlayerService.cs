@@ -1,4 +1,5 @@
-﻿using LiveScoreReporter.Application.Services.Interfaces;
+﻿using LiveScoreReporter.Application.Models.DTO;
+using LiveScoreReporter.Application.Services.Interfaces;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
 
@@ -14,6 +15,5 @@ public class PlayerService(IPlayerRepository playerRepository) : IPlayerService
     public async Task<ICollection<Player>> GetPlayersAsync()
     {
        return await playerRepository.GetAllAsync();
-       
     }
 }

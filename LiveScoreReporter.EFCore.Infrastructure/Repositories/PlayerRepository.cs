@@ -57,6 +57,8 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
             return await _context.Players
                 .AsNoTracking()
                 .Include(p => p.Events)
+                .Include(p => p.Lineups)
+                .ThenInclude(l => l.Team)
                 .FirstOrDefaultAsync(p => p.Id == playerId);
         }
 

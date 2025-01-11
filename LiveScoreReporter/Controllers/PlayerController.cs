@@ -1,4 +1,5 @@
-﻿using LiveScoreReporter.Application.Models.DTO;
+﻿using LiveScoreReporter.Application.Models;
+using LiveScoreReporter.Application.Models.DTO;
 using LiveScoreReporter.Application.Services.Interfaces;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +8,7 @@ namespace LiveScoreReporter.Controllers;
 
 [ApiController]
 [Route("/players")]
-public class PlayerController(IPlayerService playerService, IEventService eventService) : ControllerBase
+public class PlayerController(IPlayerService playerService, IEventService eventService, IDtoMapper dtoMapper) : ControllerBase
 {
     
     [HttpGet]
@@ -20,7 +21,7 @@ public class PlayerController(IPlayerService playerService, IEventService eventS
             return NotFound();
         }
 
-        return Ok(players.Select(MapPlayerToDto));
+        return Ok(players.Select(player => dtoMapper.MapPlayerToDto(player)));
     }
     
     [HttpGet("{playerId}")]
@@ -33,12 +34,10 @@ public class PlayerController(IPlayerService playerService, IEventService eventS
             return NotFound();
         }
 
-        return Ok(MapPlayerDetails(player));
+        return Ok(dtoMapper.MapPlayerDetails(player));
     }
 
-    private static PlayerDto MapPlayerToDto(Player player) => new (player.Id, player.Name, player.Postition, player.Photo);
-    private PlayerDetailsDto MapPlayerDetails(Player player) => new (player.Id, player.Name, player.Postition, 
-        player.Photo, eventService.MapEventsToDto(player.Events.ToList()));
+
 
 
 }

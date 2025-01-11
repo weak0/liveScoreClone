@@ -9,5 +9,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces
 {
     public interface ITeamRepository : IGenericRepository<Team>
     {
+        Task<Team?> GetTeamAsync(int teamId);
+        Task<List<Team>> GetTeamsAsync();
     }
 }

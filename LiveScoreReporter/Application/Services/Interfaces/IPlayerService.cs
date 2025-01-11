@@ -1,4 +1,5 @@
-﻿using LiveScoreReporter.EFCore.Infrastructure.Entities;
+﻿using LiveScoreReporter.Application.Models.DTO;
+using LiveScoreReporter.EFCore.Infrastructure.Entities;
 
 namespace LiveScoreReporter.Application.Services.Interfaces;
 

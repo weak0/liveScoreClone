@@ -174,7 +174,7 @@ namespace LiveScoreReporter.Application.Services
                     Details = e.Detail,
                     Comments = e.Comments,
                     AssistPlayerId = e.Assist.Id,
-                    Time = e.Time.Elapsed + e.Time.Extra,
+                    Time = e.Time.Elapsed,
                     Type = e.Type switch
                     {
                         "Goal" => EventType.Goal,

@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using LiveScoreReporter.Application.Models;
 using LiveScoreReporter.Application.Services;
 using LiveScoreReporter.Application.Services.Interfaces;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories;
@@ -27,6 +28,8 @@ public static class ServiceCollectionExtension
         services.AddScoped<IEventService, EventService>();
         services.AddScoped<ISerializerService, SerializerService>();
         services.AddScoped<IPlayerService, PlayerService>();
+        services.AddScoped<ITeamService, TeamService>();
+        services.AddScoped<IDtoMapper, DtoMapper>();
         services.AddScoped<DbSeeder>();
         return services;
     }

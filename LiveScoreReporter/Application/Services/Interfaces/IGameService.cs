@@ -16,6 +16,8 @@ namespace LiveScoreReporter.Application.Services.Interfaces
         List<GameDto> MapGamesToDto(List<Game> gamesWithDetails);
         string SerializeGamesToJson(List<GameDto> gamesWithDetailsDtos);
         Task<List<Entities.Lineup>> GetGameLineupAsync(int gameId);
-        public GameDetailsDto MapToGameDetailsDto(Game game, Entities.Lineup homeTeamLineup, Entities.Lineup awayTeamLineup,  List<Entities.Event> gameEvents);
+        GameDetailsDto MapToGameDetailsDto(Game game, Entities.Lineup homeTeamLineup, Entities.Lineup awayTeamLineup,  List<Entities.Event> gameEvents);
+        
+        
     }
 }
