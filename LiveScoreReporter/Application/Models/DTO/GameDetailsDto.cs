@@ -9,5 +9,6 @@ public class GameDetailsDto
     public string AwayTeamLogo { get; set; }
     public ICollection<string> HomeTeamLineup { get; set; }
     public ICollection<string> AwayTeamLineup { get; set; }
+    public ICollection<EventWithDetailsDto> Events { get; set; }
     public string GameResult { get; set; }
 }

@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace LiveScoreReporter.Application.Services.Interfaces
 {
-    public interface IMatchService
+    public interface ISeederService
     {
         Task<Root> GetMatchDetailsAsync(int fixtureId);
         Task<bool> AddDataToDb(Root obj);
         Task SeedGameLineupAsync(int fixtureId);
-        Task AddOrUpdatePlayersAsync(IEnumerable<Lineup>? lineups);
-
+        Task AddOrUpdatePlayersAsync(IEnumerable<Lineup> lineups);
+        Task SeedGameEventsAsync(int gameId);
     }
 }

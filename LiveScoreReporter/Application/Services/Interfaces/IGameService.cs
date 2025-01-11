@@ -1,7 +1,8 @@
 ﻿using LiveScoreReporter.Application.Models;
 using LiveScoreReporter.Application.Models.DTO;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
-using Lineup = LiveScoreReporter.EFCore.Infrastructure.Entities.Lineup;
+using Entities = LiveScoreReporter.EFCore.Infrastructure.Entities;
+
 
 namespace LiveScoreReporter.Application.Services.Interfaces
 {
@@ -14,7 +15,7 @@ namespace LiveScoreReporter.Application.Services.Interfaces
         Task<List<Game>> GetGamesWithDetailsAsync();
         List<GameDto> MapGamesToDto(List<Game> gamesWithDetails);
         string SerializeGamesToJson(List<GameDto> gamesWithDetailsDtos);
-        Task<List<Lineup>> GetGameLineupAsync(int gameId);
-        public GameDetailsDto MapToGameDetailsDto(Game game, Lineup homeTeamLineup, Lineup awayTeamLineup);
+        Task<List<Entities.Lineup>> GetGameLineupAsync(int gameId);
+        public GameDetailsDto MapToGameDetailsDto(Game game, Entities.Lineup homeTeamLineup, Entities.Lineup awayTeamLineup,  List<Entities.Event> gameEvents);
     }
 }

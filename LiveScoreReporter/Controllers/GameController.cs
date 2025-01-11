@@ -8,10 +8,12 @@ namespace LiveScoreReporter.Controllers;
 public class GameController : ControllerBase
 {
     private readonly IGameService _gameService;
+    private readonly IEventService _eventService;
 
-    public GameController(IGameService gameService)
+    public GameController(IGameService gameService, IEventService eventService)
     {
         _gameService = gameService;
+        _eventService = eventService;
     }
         
     [HttpGet]
@@ -30,9 +32,26 @@ public class GameController : ControllerBase
     {
         var gamesWithScoresAndTeams = await _gameService.GetSingleGameWithDetailsAsync(gameId);
         
-        var getGameLineup = await _gameService.GetGameLineupAsync(gameId);
+        if (gamesWithScoresAndTeams == null)
+        {
+            return NotFound();
+        }
+        
+        var gameLineup = await _gameService.GetGameLineupAsync(gameId);
 
-        var gamesWithDetailsDto = _gameService.MapToGameDetailsDto(gamesWithScoresAndTeams, getGameLineup[0], getGameLineup[1]);
+        if (gameLineup.Count != 2)
+        {
+            return NotFound("Lineup not found");
+        }
+        
+        var gameEvents = await _eventService.GetGameEventsWithDetailsAsync(gameId);
+        
+        if (gameEvents.Count == 0)
+        {
+            return NotFound("Events not found");
+        }
+        
+        var gamesWithDetailsDto = _gameService.MapToGameDetailsDto(gamesWithScoresAndTeams, gameLineup[0], gameLineup[1], gameEvents);
 
         return Ok(gamesWithDetailsDto);
     }

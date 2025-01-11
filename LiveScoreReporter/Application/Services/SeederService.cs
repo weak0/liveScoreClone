@@ -6,20 +6,17 @@ using LiveScoreReporter.EFCore.Infrastructure.Repositories;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
 using Newtonsoft.Json;
 using RestSharp;
-using League = LiveScoreReporter.EFCore.Infrastructure.Entities.League;
-using Lineup = LiveScoreReporter.EFCore.Infrastructure.Entities.Lineup;
-using Player = LiveScoreReporter.EFCore.Infrastructure.Entities.Player;
-using Score = LiveScoreReporter.EFCore.Infrastructure.Entities.Score;
+using Event = LiveScoreReporter.Application.Models.Event;
+using Entities = LiveScoreReporter.EFCore.Infrastructure.Entities;
 using Team = LiveScoreReporter.EFCore.Infrastructure.Entities.Team;
 using ResponseLeague = LiveScoreReporter.Application.Models.League;
 using ResponseTeam = LiveScoreReporter.Application.Models.Teams;
 using ResponseLineup = LiveScoreReporter.Application.Models.Lineup;
-using ResponseScore = LiveScoreReporter.Application.Models.Score;
 
 
 namespace LiveScoreReporter.Application.Services
 {
-    public class SeederService : IMatchService
+    public class SeederService : ISeederService
     {
         private readonly RestClient _restClient;
         private readonly IGameRepository _gameRepository;
@@ -29,13 +26,18 @@ namespace LiveScoreReporter.Application.Services
         private readonly ILeagueRepository _leagueRepository;
         private readonly ILineupRepository _lineupRepository;
         private readonly LiveScoreReporterDbContext _context;
+        private readonly IEventRepository _eventRepository;
+        
+        const string  API_KEY = "4038020fe2c0d80536856c4f340a1732";
 
         public SeederService(IGameRepository gamesRepository, 
             ITeamRepository teamRepository, 
             IScoreRepository scorerRepository, 
             IPlayerRepository playerRepository, 
             ILeagueRepository leagueRepository, 
-            ILineupRepository lineupRepository, LiveScoreReporterDbContext context)
+            ILineupRepository lineupRepository,
+            IEventRepository eventRepository,
+            LiveScoreReporterDbContext context)
         {
             _gameRepository = gamesRepository;
             _teamRepository = teamRepository;
@@ -43,6 +45,7 @@ namespace LiveScoreReporter.Application.Services
             _playerRepository = playerRepository;
             _leagueRepository = leagueRepository;
             _lineupRepository = lineupRepository;
+            _eventRepository = eventRepository;
             _context = context;
             _restClient = new RestClient("https://v3.football.api-sports.io/");
         }
@@ -52,7 +55,7 @@ namespace LiveScoreReporter.Application.Services
             try
             {
                 var request = new RestRequest($"fixtures?id={fixtureId}");
-                request.AddHeader("x-apisports-key", "4038020fe2c0d80536856c4f340a1732");
+                request.AddHeader("x-apisports-key", API_KEY);
 
                 var response = await _restClient.ExecuteAsync(request);
 
@@ -102,37 +105,37 @@ namespace LiveScoreReporter.Application.Services
             try
             {
                 var request = new RestRequest($"fixtures/lineups?fixture={fixtureId}");
-                request.AddHeader("x-apisports-key", "4038020fe2c0d80536856c4f340a1732");
+                request.AddHeader("x-apisports-key", API_KEY);
 
                 var response = await _restClient.ExecuteAsync(request);
                 
                 if (!response.IsSuccessful)
                     throw new HttpRequestException($"Request failed with status code {response.StatusCode}: {response.Content}");
 
-                var deserializedLineups = JsonConvert.DeserializeObject<LineupResponse>(response.Content);
+                var deserializedLineups = JsonConvert.DeserializeObject<ApiListResponse<Models.Lineup>>(response.Content!);
                 
                 await AddOrUpdatePlayersAsync(deserializedLineups.Response);
                 
                 var homePlayers = deserializedLineups.Response[0].StartXI
                     .Select(p => _context.Players.Local.FirstOrDefault(pl => pl.Id == p.Player.Id)
                                  ?? _context.Players.Find(p.Player.Id)
-                                 ?? new Player { Id = p.Player.Id })
+                                 ?? new Entities.Player { Id = p.Player.Id })
                     .ToList();
 
                 var awayPlayers = deserializedLineups.Response[1].StartXI
                     .Select(p => _context.Players.Local.FirstOrDefault(pl => pl.Id == p.Player.Id)
                                  ?? _context.Players.Find(p.Player.Id)
-                                 ?? new Player { Id = p.Player.Id })
+                                 ?? new Entities.Player { Id = p.Player.Id })
                     .ToList();
                 
-                var homeTeamLineUp = new Lineup
+                var homeTeamLineUp = new Entities.Lineup
                 {
                     GameId = fixtureId,
                     TeamId = deserializedLineups.Response[0].Team.Id,
                     Players = homePlayers
                 };
 
-                var awayTeamLineup = new Lineup
+                var awayTeamLineup = new Entities.Lineup
                 {
                     GameId = fixtureId,
                     TeamId = deserializedLineups.Response[1].Team.Id,
@@ -141,6 +144,49 @@ namespace LiveScoreReporter.Application.Services
 
                 await _lineupRepository.AddOrUpdateLineupAsync(homeTeamLineUp);
                 await _lineupRepository.AddOrUpdateLineupAsync(awayTeamLineup);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        
+        public async Task SeedGameEventsAsync(int gameid)
+        {
+            try
+            {
+                var request = new RestRequest($"fixtures/events?fixture={gameid}");
+                request.AddHeader("x-apisports-key", API_KEY);
+
+                var response = await _restClient.ExecuteAsync(request);
+                
+                if (!response.IsSuccessful)
+                    throw new HttpRequestException($"Request failed with status code {response.StatusCode}: {response.Content}");
+
+                var deserializedEvents = JsonConvert.DeserializeObject<ApiListResponse<Event>>(response.Content).Response;
+                
+                var gameEvents = deserializedEvents.Select(e => new Entities.Event
+                {
+                    GameId = gameid,
+                    PlayerId = e.Player.Id,
+                    TeamId = e.Team.Id,
+                    Details = e.Detail,
+                    Comments = e.Comments,
+                    AssistPlayerId = e.Assist.Id,
+                    Time = e.Time.Elapsed + e.Time.Extra,
+                    Type = e.Type switch
+                    {
+                        "Goal" => EventType.Goal,
+                        "Card" => EventType.Card,
+                        "Var" => EventType.Var,
+                        _ => EventType.Subst
+                    }
+                    
+                }).ToList();
+                
+                await _eventRepository.AddGameEvents(gameEvents);
+
             }
             catch (Exception e)
             {
@@ -188,7 +234,7 @@ namespace LiveScoreReporter.Application.Services
            
             return fixture;
         }
-        private async Task<Score> GetOrAddScoreAsync(int fixtureId, ResponseScore obj)
+        private async Task<Entities.Score> GetOrAddScoreAsync(int fixtureId, Models.Score obj)
         {
             var existingScore = _scoreRepository.Select(s => s.GameId == fixtureId);
           
@@ -196,7 +242,7 @@ namespace LiveScoreReporter.Application.Services
                 return existingScore;
             
 
-            var score = new Score
+            var score = new Entities.Score
             {
                 Home = obj.Fulltime.Home.GetValueOrDefault(),
                 Away = obj.Fulltime.Away.GetValueOrDefault(),
@@ -216,7 +262,7 @@ namespace LiveScoreReporter.Application.Services
             if (existingLeague != null) 
                 return;
 
-            var league = new League
+            var league = new Entities.League
             {
                 Id = leagueData.Id,
                 Name = leagueData.Name,
@@ -258,7 +304,7 @@ namespace LiveScoreReporter.Application.Services
             if (existingPlayer != null) 
                 return;
 
-            var player = new Player
+            var player = new Entities.Player
             {
                 Id = playerData.Id,
                 Name = playerData.Name

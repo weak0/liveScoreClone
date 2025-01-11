@@ -2,7 +2,7 @@
 using LiveScoreReporter.Application.Services.Interfaces;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
-using Newtonsoft.Json;
+
 
 namespace LiveScoreReporter.Application.Services
 {
@@ -11,16 +11,22 @@ namespace LiveScoreReporter.Application.Services
 
         private readonly IEventRepository _eventRepository;
         private readonly ISerializerService _serializerService;
+        private readonly ISeederService _seederService;
 
-        public EventService(IEventRepository eventRepository, ISerializerService serializerService)
+        public EventService(IEventRepository eventRepository, ISerializerService serializerService, ISeederService seederService)
         {
             _eventRepository = eventRepository;
             _serializerService = serializerService;
+            _seederService = seederService;
         }
 
         public async Task<List<Event>> GetGameEventsWithDetailsAsync(int gameId)
         {
-            return await _eventRepository.GetAllEventsForGame(gameId);
+            var gameEvents =  await _eventRepository.GetAllEventsForGame(gameId);
+            if (gameEvents.Count != 0) return gameEvents;
+            await _seederService.SeedGameEventsAsync(gameId);
+            gameEvents = await _eventRepository.GetAllEventsForGame(gameId);
+            return gameEvents;
         }
 
         public List<EventWithDetailsDto> MapEventsToDto(List<Event> eventsWithDetails)

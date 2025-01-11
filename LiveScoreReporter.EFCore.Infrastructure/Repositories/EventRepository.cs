@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using LiveScoreReporter.EFCore.Infrastructure.Entities;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -105,6 +100,12 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
                 .Include(e => e.Team)
                 .Include(e => e.Player)
                 .ToListAsync();
+        }
+
+        public Task AddGameEvents(List<Event> events)
+        {
+            _context.Events.AddRange(events);
+            return _context.SaveChangesAsync();
         }
 
 

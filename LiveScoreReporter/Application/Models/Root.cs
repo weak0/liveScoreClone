@@ -578,11 +578,10 @@ namespace LiveScoreReporter.Application.Models
         [JsonProperty("city")]
         public string City { get; set; }
     }
-    public class LineupResponse
+    
+    public class ApiListResponse<T>
     {
-        public string Get { get; set; }
-        public Parameters Parameters { get; set; }
-        public List<Lineup> Response { get; set; }
+        public List<T> Response { get; set; }
     }
 
 

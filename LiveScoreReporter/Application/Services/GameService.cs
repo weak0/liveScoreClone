@@ -10,10 +10,10 @@ namespace LiveScoreReporter.Application.Services
     {
         private readonly IGameRepository _gameRepository;
         private readonly ISerializerService _serializerService;
-        private readonly IMatchService _seederService;
+        private readonly ISeederService _seederService;
 
 
-        public GameService(IGameRepository gameRepository, ISerializerService serializerService, IMatchService seederService)
+        public GameService(IGameRepository gameRepository, ISerializerService serializerService, ISeederService seederService)
         {
             _gameRepository = gameRepository;
             _serializerService = serializerService;
@@ -28,11 +28,11 @@ namespace LiveScoreReporter.Application.Services
         public async Task<List<Lineup>> GetGameLineupAsync(int gameId)
         {
             var lineup =  await _gameRepository.GetGameLineupAsync(gameId);
-            if (lineup.Count == 0)
-            {
-                 await  _seederService.SeedGameLineupAsync(gameId);
-                 await GetGameLineupAsync(gameId);
-            }
+            if (lineup.Count != 0) return lineup;
+            
+            await  _seederService.SeedGameLineupAsync(gameId);
+            lineup = await _gameRepository.GetGameLineupAsync(gameId);
+            
             return lineup;
         }
 
@@ -49,7 +49,7 @@ namespace LiveScoreReporter.Application.Services
             };
         }
         
-        public GameDetailsDto MapToGameDetailsDto(Game game, Lineup homeTeamLineup, Lineup awayTeamLineup)
+        public GameDetailsDto MapToGameDetailsDto(Game game, Lineup homeTeamLineup, Lineup awayTeamLineup, List<Event> gameEvents)
         {
             return new GameDetailsDto
             {
@@ -60,6 +60,17 @@ namespace LiveScoreReporter.Application.Services
                 AwayTeamLogo = game.AwayTeam.Logo,
                 HomeTeamLineup = homeTeamLineup.Players.Select(p => p.Name).ToList(),
                 AwayTeamLineup = awayTeamLineup.Players.Select(p => p.Name).ToList(),
+                Events = gameEvents.Select( e => new EventWithDetailsDto
+                {
+                    TeamId = e.TeamId,
+                    TeamName = e.Team?.Name,
+                    Type = e.Type,
+                    Details = e.Details,
+                    Comments = e.Comments,
+                    Time = e.Time,
+                    PlayerName = e.Player?.Name,
+                    AssistPlayerName = e.AssistPlayer?.Name,
+                }).ToList(),
                 GameResult = $"{game.Score.Home}:{game.Score.Away}"
             };
         }

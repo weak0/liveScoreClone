@@ -10,5 +10,6 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces
     public interface IEventRepository : IGenericRepository<Event>
     {
         Task<List<Event>> GetAllEventsForGame(int gameId);
+        Task AddGameEvents(List<Event> events);
     }
 }

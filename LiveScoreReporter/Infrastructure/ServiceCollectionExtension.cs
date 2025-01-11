@@ -15,7 +15,7 @@ public static class ServiceCollectionExtension
 {
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddScoped<IMatchService, SeederService>();
+        services.AddScoped<ISeederService, SeederService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IGameRepository, GameRepository>();
         services.AddScoped<ITeamRepository, TeamRepository>();

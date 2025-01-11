@@ -118,7 +118,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
                 .AsNoTracking()
                 .Include(l => l.Players)
                 .Where(l => l.GameId == gameId)
-                .ToListAsync(); // Use ToListAsync for async EF queries
+                .ToListAsync();
         }
 
 

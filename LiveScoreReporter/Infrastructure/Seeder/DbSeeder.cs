@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace LiveScoreReporter.Seeder;
 
 
-public class DbSeeder(IMatchService matchService, LiveScoreReporterDbContext dbContext)
+public class DbSeeder(ISeederService seederService, LiveScoreReporterDbContext dbContext)
 {
     public async Task SeedAsync()
     {
@@ -19,16 +19,16 @@ public class DbSeeder(IMatchService matchService, LiveScoreReporterDbContext dbC
             var jsonData = await File.ReadAllTextAsync(path);
             var deserializedData = JsonConvert.DeserializeObject<Root>(jsonData);
                 if (deserializedData != null)
-                    await matchService.AddDataToDb(deserializedData);
+                    await seederService.AddDataToDb(deserializedData);
         }
 
         if (!dbContext.Players.Any())
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), "Infrastructure","Seeder", "Data", "Lineups.json");
             var jsonData = await File.ReadAllTextAsync(path);
-            var deserializedData = JsonConvert.DeserializeObject<LineupResponse>(jsonData);
+            var deserializedData = JsonConvert.DeserializeObject<ApiListResponse<Lineup>>(jsonData);
             if (deserializedData != null)
-                await matchService.AddOrUpdatePlayersAsync(deserializedData.Response);
+                await seederService.AddOrUpdatePlayersAsync(deserializedData.Response);
         }
         
         await dbContext.SaveChangesAsync();
