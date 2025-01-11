@@ -33,13 +33,14 @@ namespace LiveScoreReporter.Application.Services
         {
             return eventsWithDetails.Select(e => new EventWithDetailsDto
             {
+                GameId = e.GameId,
                 TeamId = e.TeamId,
-                TeamName = e.Team.Name,
+                TeamName = e.Team?.Name,
                 Type = e.Type,
                 Details = e.Details,
                 Comments = e.Comments,
                 Time = e.Time,
-                PlayerName = e.Player.Name,
+                PlayerName = e.Player?.Name,
                 AssistPlayerName = e.AssistPlayer?.Name,
             }).ToList();
         }

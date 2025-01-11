@@ -1,13 +1,11 @@
 ﻿using System.Reflection;
 using LiveScoreReporter.Application.Services;
 using LiveScoreReporter.Application.Services.Interfaces;
-using LiveScoreReporter.EFCore.Infrastructure;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories;
 using LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces;
 using LiveScoreReporter.Seeder;
 using MediatR.Extensions.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.EntityFrameworkCore;
 
 namespace LiveScoreReporter.Infrastucture;
 
@@ -28,6 +26,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IGameService, GameService>();
         services.AddScoped<IEventService, EventService>();
         services.AddScoped<ISerializerService, SerializerService>();
+        services.AddScoped<IPlayerService, PlayerService>();
         services.AddScoped<DbSeeder>();
         return services;
     }

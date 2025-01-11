@@ -20,7 +20,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories.Interfaces
         void Update(in T sender);
         int Save();
         Task<int> SaveAsync();
-        public T Select(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>> include = null);
-        public Task<T> SelectAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>> include = null);
+        public T? Select(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>> include = null);
+        public Task<T?> SelectAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>> include = null);
     }
 }

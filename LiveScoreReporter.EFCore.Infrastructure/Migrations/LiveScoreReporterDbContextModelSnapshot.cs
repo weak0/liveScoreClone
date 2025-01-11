@@ -170,6 +170,9 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Photo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Postition")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

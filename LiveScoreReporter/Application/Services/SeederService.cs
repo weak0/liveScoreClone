@@ -309,6 +309,8 @@ namespace LiveScoreReporter.Application.Services
                 Id = playerData.Id,
                 Name = playerData.Name,
                 Postition = playerData.Pos,
+                Photo = playerData.Photo
+                
             };
 
             _playerRepository.Add(player);

@@ -21,15 +21,6 @@ public class DbSeeder(ISeederService seederService, LiveScoreReporterDbContext d
                 if (deserializedData != null)
                     await seederService.AddDataToDb(deserializedData);
         }
-
-        if (!dbContext.Players.Any())
-        {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "Infrastructure","Seeder", "Data", "Lineups.json");
-            var jsonData = await File.ReadAllTextAsync(path);
-            var deserializedData = JsonConvert.DeserializeObject<ApiListResponse<Lineup>>(jsonData);
-            if (deserializedData != null)
-                await seederService.AddOrUpdatePlayersAsync(deserializedData.Response);
-        }
         
         await dbContext.SaveChangesAsync();
     }

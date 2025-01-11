@@ -35,7 +35,7 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
             return _context.SaveChangesAsync();
         }
 
-        public async Task<Player> SelectAsync(Expression<Func<Player, bool>> predicate, Func<IQueryable<Player>, IQueryable<Player>> include = null)
+        public async Task<Player?> SelectAsync(Expression<Func<Player, bool>> predicate, Func<IQueryable<Player>, IQueryable<Player>> include = null)
         {
             IQueryable<Player> query = _context.Set<Player>();
 
@@ -45,6 +45,19 @@ namespace LiveScoreReporter.EFCore.Infrastructure.Repositories
             }
 
             return await query.FirstOrDefaultAsync(predicate);
+        }
+
+        public Task<List<Player>> GetAllAsync()
+        {
+            return _context.Players.ToListAsync();
+        }
+        
+        public async Task<Player?> GetPlayerAsync(int playerId)
+        {
+            return await _context.Players
+                .AsNoTracking()
+                .Include(p => p.Events)
+                .FirstOrDefaultAsync(p => p.Id == playerId);
         }
 
         private bool _disposed = false;
